@@ -1,16 +1,20 @@
 # forum
 
-A new Flutter project.
+## lib/main.dart
 
-## Getting Started
+包含底部导航栏的页面
 
-This project is a starting point for a Flutter application.
+### TODO
 
-A few resources to get you started if this is your first Flutter project:
+- 确定导航页面
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## lib/home.dart
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+信息浏览主页
+
+### TODO
+- UI美化
+- 评论功能
+- 图片
+- 点赞数评论数
+- ...
