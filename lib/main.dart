@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'home.dart';
+import 'account.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,10 +46,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'Index 3: Chat',
       style: optionStyle,
     ),
-    Text(
-      'Index 4: Settings',
-      style: optionStyle,
-    ),
+    AccountPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -82,8 +80,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             label: 'Chat',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
           ),
         ],
         currentIndex: _selectedIndex,
