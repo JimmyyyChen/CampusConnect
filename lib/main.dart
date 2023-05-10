@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'home.dart';
@@ -36,11 +34,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     Text(
-      'Index 1: Business',
+      'Index 1: Favorites',
       style: optionStyle,
     ),
     Text(
-      'Index 2: School',
+      'Index 2: Following',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 3: Chat',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 4: Settings',
       style: optionStyle,
     ),
   ];
@@ -54,9 +60,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BottomNavigationBar Sample'),
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -67,16 +70,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.star),
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(Icons.people_outline_sharp),
+            label: 'Following',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.black45,
         onTap: _onItemTapped,
       ),
     );

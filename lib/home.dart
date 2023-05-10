@@ -12,36 +12,45 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: 9,
-        itemBuilder: (context, index) {
-          return PostWidget(
-            post: Post(
-                userName: "userName",
-                userImage:
-                    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-                time: '00:00',
-                text:
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                images: List.filled(Random().nextInt(9) + 1,
-                    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
-                comments: [
-                  const Comment(
-                      userName: "commentUserName",
-                      userImage:
-                          "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-                      time: "00:00",
-                      text: "this is a comment"),
-                  const Comment(
-                      userName: "commentUserName",
-                      userImage:
-                          "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-                      time: "00:00",
-                      text: "this is another comment")
-                ],
-                likes: 0),
-          );
-        });
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
+          itemCount: 9,
+          itemBuilder: (context, index) {
+            return PostWidget(
+              post: Post(
+                  userName: "userName",
+                  userImage:
+                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+                  time: '00:00',
+                  text:
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                  images: List.filled(Random().nextInt(9) + 1,
+                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'),
+                  comments: [
+                    const Comment(
+                        userName: "commentUserName",
+                        userImage:
+                            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
+                        time: "00:00",
+                        text: "this is a comment"),
+                    const Comment(
+                        userName: "commentUserName",
+                        userImage:
+                            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
+                        time: "00:00",
+                        text: "this is another comment")
+                  ],
+                  likes: 0),
+            );
+          }),
+    );
   }
 }
 
