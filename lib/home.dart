@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'search.dart';
 
+import 'NewPostScreen.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -32,7 +34,14 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        //Todo: add button functionality
+        onPressed: () {
+          // 打开一个新的屏幕，能够编辑或发布内容等
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewPostScreen()),
+          );
+        },
         child: const Icon(Icons.add),
       ),
       body: ListView.builder(
