@@ -69,7 +69,10 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
+  static bool isStar = false;
+  static bool isLike = false;
+
   const PostWidget({
     super.key,
     required this.post,
@@ -78,12 +81,17 @@ class PostWidget extends StatelessWidget {
   final Post post;
 
   @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) {
           return PostDetailPage(
-            post: post,
+            post: widget.post,
           );
         }));
       },
@@ -99,19 +107,19 @@ class PostWidget extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(post.userImage),
+                    backgroundImage: NetworkImage(widget.post.userImage),
                   ),
                   Column(
                     children: [
-                      Text(post.userName),
-                      Text(post.time),
+                      Text(widget.post.userName),
+                      Text(widget.post.time),
                     ],
                   ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(post.text),
+                child: Text(widget.post.text),
               ),
               // grid of images
               GridView.count(
@@ -121,18 +129,28 @@ class PostWidget extends StatelessWidget {
                 crossAxisSpacing: 8,
                 childAspectRatio: 1,
                 shrinkWrap: true,
-                children: List.generate(post.images.length, (index) {
-                  return Image.network(post.images[index]);
+                children: List.generate(widget.post.images.length, (index) {
+                  return Image.network(widget.post.images[index]);
                 }),
               ),
               Row(
                 children: [
                   TextButton(
-                    onPressed: () {},
-                    child: const Row(
+                    onPressed: () => setState(() {
+                      PostWidget.isLike = !PostWidget.isLike;
+                      // TODO: logic
+                      // if (PostWidget.isLike) {
+                      //   widget.post.likes++;
+                      // } else {
+                      //   widget.post.likes--;
+                      // }
+                    }),
+                    child: Row(
                       children: [
-                        Icon(Icons.thumb_up),
-                        Text('Like'),
+                        Icon(PostWidget.isLike
+                            ? Icons.favorite
+                            : Icons.favorite_border),
+                        const Text('Like'),
                       ],
                     ),
                   ),
@@ -151,6 +169,18 @@ class PostWidget extends StatelessWidget {
                       children: [
                         Icon(Icons.share),
                         Text('Share'),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() {
+                      PostWidget.isStar = !PostWidget.isStar;
+                    }),
+                    child: Row(
+                      children: [
+                        Icon(
+                            PostWidget.isStar ? Icons.star : Icons.star_border),
+                        const Text('Star'),
                       ],
                     ),
                   ),
@@ -260,6 +290,15 @@ class PostDetailPage extends StatelessWidget {
                             children: [
                               Icon(Icons.share),
                               Text('Share'),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Row(
+                            children: [
+                              Icon(Icons.star),
+                              Text('Star'),
                             ],
                           ),
                         ),
