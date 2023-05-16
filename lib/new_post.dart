@@ -7,14 +7,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
-class NewPostPage extends StatefulWidget {
-  const NewPostPage({Key? key}) : super(key: key);
+class NewPostScreen extends StatefulWidget {
+  const NewPostScreen({Key? key}) : super(key: key);
 
   @override
-  _NewPostPageState createState() => _NewPostPageState();
+  _NewPostScreenState createState() => _NewPostScreenState();
 }
 
-class _NewPostPageState extends State<NewPostPage> {
+class _NewPostScreenState extends State<NewPostScreen> {
   final TextEditingController _postTextController = TextEditingController();
   String? _tag;
   File? _image;
@@ -23,6 +23,30 @@ class _NewPostPageState extends State<NewPostPage> {
   Position? _currentPosition;
 
   Future<void> _getCurrentLocation() async {
+    bool isLocationServiceEnabled;
+    LocationPermission permission;
+
+    // 检查位置服务是否启用
+    isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocationServiceEnabled) {
+      // 位置服务未启用，显示错误提示
+      // ...
+      return;
+    }
+
+    // 请求位置权限
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      // 位置权限被拒绝，请求权限
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // 位置权限被拒绝，显示错误提示
+        // ...
+        return;
+      }
+    }
+
+    // 获取当前位置
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
