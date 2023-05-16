@@ -83,8 +83,8 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-  bool _isStar = false;
-  bool _isLike = false;
+  late bool _isStar;
+  late bool _isLike;
 
   @override
   void initState() {
