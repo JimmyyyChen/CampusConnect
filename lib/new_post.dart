@@ -6,6 +6,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:developer';
+
 
 class NewPostScreen extends StatefulWidget {
   const NewPostScreen({Key? key}) : super(key: key);
@@ -183,6 +185,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       final double latitude = _currentPosition!.latitude;
                       final double longitude = _currentPosition!.longitude;
                       print('您的位置信息是： $latitude, $longitude');
+                      log('您的位置信息是： $latitude, $longitude');
                     }
                     if (_tag != null) {
                       // 处理帖子标签的逻辑
