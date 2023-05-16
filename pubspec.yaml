@@ -40,6 +40,12 @@ dependencies:
   geolocator: ^9.0.2
   image_picker: ^0.8.7+5
   video_player: ^2.6.1
+  firebase_core: ^2.12.0
+  firebase_auth: ^4.6.0
+  firebase_ui_auth: ^1.4.0
+  provider: ^6.0.5
+  cloud_firestore: ^4.7.0
+  go_router: ^7.0.1
 
 dev_dependencies:
   flutter_test:
