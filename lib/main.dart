@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'app_state.dart';
 import 'home.dart';
 import 'favorite.dart';
+import 'following.dart';
+import 'chat.dart';
 import 'account.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    runApp(ChangeNotifierProvider(
+  runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),
     builder: ((context, child) => const MyApp()),
   ));
@@ -42,14 +44,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     FavoritePage(),
-    Text(
-      'Index 2: Following',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 3: Chat',
-      style: optionStyle,
-    ),
+    FollowingPage(),
+    ChatPage(),
     AccountPage(),
   ];
 

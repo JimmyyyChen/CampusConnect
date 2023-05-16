@@ -132,7 +132,9 @@ class _PostWidgetState extends State<PostWidget> {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(widget.post.userImage),
+                    // backgroundImage: NetworkImage(widget.post.userImage),
+                    // random color
+                    backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
                   ),
                   Column(
                     children: [
@@ -155,7 +157,11 @@ class _PostWidgetState extends State<PostWidget> {
                 childAspectRatio: 1,
                 shrinkWrap: true,
                 children: List.generate(widget.post.images.length, (index) {
-                  return Image.network(widget.post.images[index]);
+                  // return Image.network(widget.post.images[index]);
+                  // random color
+                  return Container(
+                    color: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                  );
                 }),
               ),
               Row(
@@ -259,7 +265,9 @@ class PostDetailPage extends StatelessWidget {
                 Column(
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(post.userImage),
+                      // backgroundImage: NetworkImage(post.userImage),
+                      // random color
+                      backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
                     ),
                     Text(post.userName),
                     Text(post.time),
@@ -273,7 +281,11 @@ class PostDetailPage extends StatelessWidget {
                       childAspectRatio: 1,
                       shrinkWrap: true,
                       children: List.generate(post.images.length, (index) {
-                        return Image.network(post.images[index]);
+                        // return Image.network(post.images[index]);
+                        // random color
+                        return Container(
+                          color: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                        );
                       }),
                     ),
                     Row(
@@ -380,7 +392,10 @@ class CommentWidget extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(comment.userImage),
+              // backgroundImage: NetworkImage(comment.userImage),
+              // random color
+              backgroundColor:
+                  Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
             ),
             Column(
               children: [
