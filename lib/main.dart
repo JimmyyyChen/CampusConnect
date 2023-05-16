@@ -3,17 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'app_state.dart';
 import 'home.dart';
+import 'favorite.dart';
 import 'account.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // FirebaseUIAuth.configureProviders([
-  //   EmailAuthProvider(),
-  // ]);
-  // runApp(const MyApp());
-
     runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),
     builder: ((context, child) => const MyApp()),
@@ -47,10 +41,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Text(
-      'Index 1: Favorites',
-      style: optionStyle,
-    ),
+    FavoritePage(),
     Text(
       'Index 2: Following',
       style: optionStyle,
