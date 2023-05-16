@@ -18,6 +18,7 @@ class LoginPage extends StatelessWidget {
                 labelText: 'Username',
               ),
             ),
+            const SizedBox(height: 24),
             const TextField(
               obscureText: true,
               decoration: InputDecoration(
