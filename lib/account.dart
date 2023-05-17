@@ -25,11 +25,6 @@ class _AccountPageState extends State<AccountPage> {
           children: [
             Consumer<ApplicationState>(
                 builder: (context, appState, _) => ListTile(
-                      // title: appState.loggedIn
-                      //     ? Text(
-                      //         'Hello, ${FirebaseAuth.instance.currentUser!.displayName}')
-                      //     : const Text('You are not logged in.'),
-                      // bold text title
                       title: appState.loggedIn
                           ? Text(
                               'Hello, ${FirebaseAuth.instance.currentUser!.displayName}',
