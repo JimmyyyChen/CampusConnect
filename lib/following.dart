@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FollowingPage extends StatelessWidget {
@@ -24,14 +23,36 @@ class FollowingPage extends StatelessWidget {
                     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
               ),
               trailing: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('取消关注'),
+                          content: const Text('确定要取消关注吗？'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('取消')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  // TODO: cancel following from firebase
+                                },
+                                child: const Text('确定')),
+                          ],
+                        );
+                      });
+                },
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.check, size: 16),
                     Text('已关注',
                         style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.bold)),
+                            fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
