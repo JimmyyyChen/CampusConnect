@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/infoinitial.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
@@ -65,19 +66,21 @@ class _AccountPageState extends State<AccountPage> {
                                               if (user == null) {
                                                 return;
                                               }
+                                              if (state is SignedIn) {
+                                                Navigator.pop(context);
+                                              }
                                               if (state is UserCreated) {
+                                                //todo
+                                                //跳转到profile创建页面
                                                 user.updateDisplayName(
                                                     user.email!.split('@')[0]);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const EditProfilePage()),
+                                                );
                                               }
-                                              // if (!user.emailVerified) {
-                                              //   user.sendEmailVerification();
-                                              //   const snackBar = SnackBar(
-                                              //       content: Text(
-                                              //           'Please check your email to verify your email address'));
-                                              //   ScaffoldMessenger.of(context)
-                                              //       .showSnackBar(snackBar);
-                                              // }
-                                              Navigator.pop(context);
                                             }
                                           })
                                         ],

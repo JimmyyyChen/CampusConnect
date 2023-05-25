@@ -77,10 +77,10 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: "4a07be6cb69c84d677a6c3096fcf960cc3285a8330b4603e0d463d15d9bd934c"
+      sha256: f092b211a4319e98e5ff58223576de6c2803db36221657b46c82574721240687
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.17.1"
+    version: "1.17.2"
   cross_file:
     dependency: transitive
     description:
@@ -217,6 +217,30 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.6+1"
+  firebase_storage:
+    dependency: "direct main"
+    description:
+      name: firebase_storage
+      sha256: "89ff2dfd353f953fb2bbbe04359ea1a46d643944f310cfed22dadf352fc16976"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "11.2.1"
+  firebase_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_storage_platform_interface
+      sha256: c06ccd21c3ed20da6128629ab7d525f7b613caddfcd5466ba4a1ff58655261ac
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.4.1"
+  firebase_storage_web:
+    dependency: transitive
+    description:
+      name: firebase_storage_web
+      sha256: "26a039f211b226fc216f9f06f13402bdf08661edb7c42cb1de3bd236afbbbf75"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.6.1"
   firebase_ui_auth:
     dependency: "direct main"
     description:
