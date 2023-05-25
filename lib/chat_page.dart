@@ -1,6 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'chat_detail.dart';
+
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
 class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -9,38 +12,39 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Chat')),
-      // wechat style chat page
       body: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(users[Random().nextInt(users.length)].name),
-                subtitle: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing eli...'),
-                // profile image
-                leading: CircleAvatar(
-                  // backgroundColor: Colors.blue,
-                  // random blue color
-                  backgroundColor:
-                      Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
-                ),
-                trailing: Text('10:00'),
-                onTap: () {},
+        itemCount: users.length,
+        itemBuilder: (context, index) {
+          final user = users[index];
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(user.name),
+              subtitle: Text(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing eli...'),
+              leading: CircleAvatar(
+                backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
               ),
-            );
-          }),
+              trailing: Text('10:00'),
+              onTap: () {
+                // Navigate to the user detail page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatDetailPage(user: user),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-class User {
-  const User({required this.name, required this.id});
 
-  final String name;
-  final String id;
-}
 
 const List<User> users = [
   User(name: 'Elon Musk', id: 'realElonMusk'),
