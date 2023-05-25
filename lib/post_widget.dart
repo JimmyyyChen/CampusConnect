@@ -11,18 +11,24 @@ import 'classes/post.dart';
 class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
+    required this.postUid,
     required this.authorUID,
     required this.postTime,
     required this.isFollowed,
     required this.content,
     required this.type,
+    required this.isFavorite,
+    required this.isLike,
   });
 
+  final String postUid;
   final String authorUID;
   final Timestamp postTime;
   final bool isFollowed;
   final String content;
   final String type;
+  final bool isFavorite;
+  final bool isLike;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -65,9 +71,7 @@ class _PostWidgetState extends State<PostWidget> {
                     ),
                     Text(
                         widget.postTime.toDate().toString().substring(
-                            0,
-                            widget.postTime.toDate().toString().length -
-                                7),
+                            0, widget.postTime.toDate().toString().length - 7),
                         style: const TextStyle(
                           color: Colors.grey,
                         )),
@@ -82,16 +86,14 @@ class _PostWidgetState extends State<PostWidget> {
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows':
-                            FieldValue.arrayRemove([widget.authorUID])
+                        'follows': FieldValue.arrayRemove([widget.authorUID])
                       });
                     } else {
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows':
-                            FieldValue.arrayUnion([widget.authorUID])
+                        'follows': FieldValue.arrayUnion([widget.authorUID])
                       });
                     }
                   }, // TODO
@@ -107,8 +109,7 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.content,
+              child: Text(widget.content,
                   style: const TextStyle(
                     fontSize: 20,
                   )),
@@ -150,23 +151,28 @@ class _PostWidgetState extends State<PostWidget> {
             Row(
               children: [
                 TextButton(
-                  // TODO:
-                  // onPressed: () => setState(() {
-                  //   widget.isLike = !widget.isLike;
-                  //   // TODO: logic
-                  //   // if (PostWidget.isLike) {
-                  //   //   widget.post.likes++;
-                  //   // } else {
-                  //   //   widget.post.likes--;
-                  //   // }
-                  // }),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (widget.isLike) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'likedPostsId':
+                            FieldValue.arrayRemove([widget.postUid])
+                      });
+                    } else {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'likedPostsId':
+                            FieldValue.arrayUnion([widget.postUid])
+                      });
+                    }
+                  },
                   child: Row(
                     children: [
-                      // Icon(widget.isLike
-                      //     ? Icons.favorite
-                      //     : Icons.favorite_border),
-                      Icon(Icons.favorite_border), // TODO
+                      Icon(widget.isLike ? Icons.thumb_up : Icons.thumb_up_alt_outlined),
                       const Text('Like'),
                     ],
                   ),
@@ -190,16 +196,29 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
                 TextButton(
-                  // TODO:
-                  // onPressed: () => setState(() {
-                  //   widget.isStar = !widget.isStar;
-                  // }),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (widget.isFavorite) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'favoritePostsId':
+                            FieldValue.arrayRemove([widget.postUid])
+                      });
+                    } else {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'favoritePostsId':
+                            FieldValue.arrayUnion([widget.postUid])
+                      });
+                    }
+                  },
                   child: Row(
                     children: [
-                      // Icon(widget.isStar ? Icons.star : Icons.star_border),
-                      Icon(Icons.star_border), // TODO
-                      const Text('Star'),
+                      Icon(widget.isFavorite ? Icons.star : Icons.star_border),
+                      const Text('Favorite'),
                     ],
                   ),
                 ),

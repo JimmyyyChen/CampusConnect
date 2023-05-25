@@ -8,10 +8,7 @@ import 'classes/post.dart';
 import 'post_widget.dart';
 
 class PostDetailPage extends StatefulWidget {
-  const PostDetailPage({
-    super.key,
-    required this.postUid
-  });
+  const PostDetailPage({super.key, required this.postUid});
 
   final String postUid;
 
@@ -32,13 +29,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
             child: ListView(
               children: [
                 Consumer<ApplicationState>(
-                  builder: (context, appState, _) =>
-                  PostWidget(
-                  authorUID: appState.posts[widget.postUid]!.authorUID,
-                  postTime: appState.posts[widget.postUid]!.postTime,
-                  isFollowed: appState.follows.contains(appState.posts[widget.postUid]!.authorUID),
-                  content: appState.posts[widget.postUid]!.content,
-                  type: appState.posts[widget.postUid]!.type,
+                  builder: (context, appState, _) => PostWidget(
+                    postUid: widget.postUid,
+                    authorUID: appState.posts[widget.postUid]!.authorUID,
+                    postTime: appState.posts[widget.postUid]!.postTime,
+                    isFollowed: appState.follows
+                        .contains(appState.posts[widget.postUid]!.authorUID),
+                    content: appState.posts[widget.postUid]!.content,
+                    type: appState.posts[widget.postUid]!.type,
+                    isFavorite: appState.favoritePostsId.contains(widget.postUid),
+                    isLike: appState.likedPostsId.contains(widget.postUid),
                   ),
                 ),
                 // TODO: comments view

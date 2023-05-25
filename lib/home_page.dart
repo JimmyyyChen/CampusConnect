@@ -47,8 +47,7 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       body: Consumer<ApplicationState>(
-        builder: (context, appState, _) => 
-        ListView.builder(
+        builder: (context, appState, _) => ListView.builder(
             itemCount: appState.posts.length,
             itemBuilder: (context, index) {
               String postUid = appState.posts.keys.elementAt(index);
@@ -61,11 +60,14 @@ class _HomePageState extends State<HomePage> {
                   }));
                 },
                 child: PostWidget(
+                  postUid: postUid,
                   authorUID: appState.posts[postUid]!.authorUID,
                   postTime: appState.posts[postUid]!.postTime,
-                  isFollowed: appState.follows.contains(appState.posts[postUid]!.authorUID),
                   content: appState.posts[postUid]!.content,
                   type: appState.posts[postUid]!.type,
+                  isFollowed: appState.follows.contains(appState.posts[postUid]!.authorUID),
+                  isFavorite: appState.favoritePostsId.contains(postUid),
+                  isLike: appState.likedPostsId.contains(postUid),
                 ),
               );
             }),

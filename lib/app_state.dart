@@ -30,6 +30,12 @@ class ApplicationState extends ChangeNotifier {
   List<String> _follows = [];
   List<String> get follows => _follows;
 
+  List<String> _favoritePostsId = [];
+  List<String> get favoritePostsId => _favoritePostsId;
+
+  List<String> _likedPostsId = [];
+  List<String> get likedPostsId => _likedPostsId;
+
   StreamSubscription<QuerySnapshot>? _postsSubscription;
   Map<String, Post> _posts = {};
   Map<String, Post> get posts => _posts;
@@ -52,10 +58,18 @@ class ApplicationState extends ChangeNotifier {
             .listen((snapshot) {
           // get current user's followings list
           _follows = [];
+          _favoritePostsId = [];
+          _likedPostsId = [];
           for (final document in snapshot.docs) {
             if (document.data()['uID'] == user.uid) {
               for (final following in document.data()['follows']) {
                 _follows.add(following);
+              }
+              for (final favoritePostId in document.data()['favoritePostsId']) {
+                _favoritePostsId.add(favoritePostId);
+              }
+              for (final likedPostId in document.data()['likedPostsId']) {
+                _likedPostsId.add(likedPostId);
               }
               break;
             }
@@ -86,7 +100,10 @@ class ApplicationState extends ChangeNotifier {
       } else {
         _loggedIn = false;
         _follows = [];
+        _favoritePostsId = [];
+        _likedPostsId = [];
         _usersSubscription?.cancel();
+        _postsSubscription?.cancel();
       }
       notifyListeners();
     });
