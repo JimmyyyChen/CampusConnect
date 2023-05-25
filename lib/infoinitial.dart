@@ -114,7 +114,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ],
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       image: NetworkImage(_imageUrl),
                     ),
                   ),
@@ -157,7 +157,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 children: [
                   TextButton(
                     onPressed: () {},
-                    child: const Text("CANCEL",
+                    child: const Text(" ",
                         style: TextStyle(
                             fontSize: 14,
                             letterSpacing: 2.2,
@@ -193,6 +193,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         'introduction': _about
                       });
                       print("sahngchuan");
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     },
                     child: const Text(
