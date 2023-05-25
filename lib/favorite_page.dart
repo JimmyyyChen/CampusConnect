@@ -2,22 +2,21 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'search.dart';
-import 'new_post.dart';
+import 'search_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class FavoritePage extends StatefulWidget {
+  const FavoritePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _FavoritePageState extends State<FavoritePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Favorites'),
         // button for search
         actions: [
           IconButton(
@@ -32,19 +31,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const NewPostScreen()),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
       body: ListView.builder(
           itemCount: 9,
           itemBuilder: (context, index) {
             return PostWidget(
+              isStar: true,
               post: Post(
                   userName: "userName",
                   userImage:
@@ -76,23 +67,51 @@ class _HomePageState extends State<HomePage> {
 }
 
 class PostWidget extends StatefulWidget {
-  static bool isStar = false;
-  static bool isLike = false;
-
   const PostWidget({
     super.key,
     required this.post,
+    this.isStar = false,
+    this.isLike = false,
   });
 
   final Post post;
+  final bool isStar;
+  final bool isLike;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  late bool _isStar;
+  late bool _isLike;
+
+  @override
+  void initState() {
+    super.initState();
+    _isStar = widget.isStar;
+    _isLike = widget.isLike;
+  }
+
+  void _toggleStar() {
+    setState(() {
+      _isStar = !_isStar;
+    });
+  }
+
+  void _toggleLike() {
+    setState(() {
+      _isLike = !_isLike;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // setState(() {
+    //   _isStar = widget.isStar;
+    //   _isLike = widget.isLike;
+    // });
+
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -115,8 +134,7 @@ class _PostWidgetState extends State<PostWidget> {
                   CircleAvatar(
                     // backgroundImage: NetworkImage(widget.post.userImage),
                     // random color
-                    backgroundColor:
-                        Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                    backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
                   ),
                   Column(
                     children: [
@@ -149,20 +167,10 @@ class _PostWidgetState extends State<PostWidget> {
               Row(
                 children: [
                   TextButton(
-                    onPressed: () => setState(() {
-                      PostWidget.isLike = !PostWidget.isLike;
-                      // TODO: logic
-                      // if (PostWidget.isLike) {
-                      //   widget.post.likes++;
-                      // } else {
-                      //   widget.post.likes--;
-                      // }
-                    }),
+                    onPressed: _toggleLike,
                     child: Row(
                       children: [
-                        Icon(PostWidget.isLike
-                            ? Icons.favorite
-                            : Icons.favorite_border),
+                        Icon(_isLike ? Icons.favorite : Icons.favorite_border),
                         const Text('Like'),
                       ],
                     ),
@@ -186,13 +194,10 @@ class _PostWidgetState extends State<PostWidget> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => setState(() {
-                      PostWidget.isStar = !PostWidget.isStar;
-                    }),
+                    onPressed: _toggleStar,
                     child: Row(
                       children: [
-                        Icon(
-                            PostWidget.isStar ? Icons.star : Icons.star_border),
+                        Icon(_isStar ? Icons.star : Icons.star_border),
                         const Text('Star'),
                       ],
                     ),
@@ -262,8 +267,7 @@ class PostDetailPage extends StatelessWidget {
                     CircleAvatar(
                       // backgroundImage: NetworkImage(post.userImage),
                       // random color
-                      backgroundColor:
-                          Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                      backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
                     ),
                     Text(post.userName),
                     Text(post.time),
@@ -280,8 +284,7 @@ class PostDetailPage extends StatelessWidget {
                         // return Image.network(post.images[index]);
                         // random color
                         return Container(
-                          color:
-                              Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                          color: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
                         );
                       }),
                     ),
@@ -391,7 +394,8 @@ class CommentWidget extends StatelessWidget {
             CircleAvatar(
               // backgroundImage: NetworkImage(comment.userImage),
               // random color
-              backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+              backgroundColor:
+                  Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
             ),
             Column(
               children: [

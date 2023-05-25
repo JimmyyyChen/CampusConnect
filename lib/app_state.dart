@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'classes/post.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
@@ -13,6 +16,14 @@ class ApplicationState extends ChangeNotifier {
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
+
+  StreamSubscription<QuerySnapshot>? _usersSubscription;
+  List<String> _follows = [];
+  List<String> get follows => _follows;
+
+  StreamSubscription<QuerySnapshot>? _postsSubscription;
+  List<Post> _posts = [];
+  List<Post> get posts => _posts;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -25,8 +36,51 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
+
+        _usersSubscription = FirebaseFirestore.instance
+            .collection('users')
+            .snapshots()
+            .listen((snapshot) {
+          // get current user's followings list
+          _follows = [];
+          for (final document in snapshot.docs) {
+            if (document.data()['uID'] == user.uid) {
+              for (final following in document.data()['follows']) {
+                _follows.add(following);
+              }
+              break;
+            }
+          }
+          notifyListeners();
+        });
+
+        _postsSubscription = FirebaseFirestore.instance
+            .collection('posts')
+            .snapshots()
+            .listen((snapshot) {
+          _posts = [];
+          for (final document in snapshot.docs) {
+            _posts.add(
+              Post( 
+                authorUID: document.data()['authorUID'],
+                content: document.data()['content'],
+                likes: document.data()['likes'],
+                location: document.data()['location'],
+                pic: document.data()['pic'],
+                postId: document.data()['postId'],
+                postTime: document.data()['postTime'],
+                type: document.data()['type'],
+                videos: document.data()['videos'],
+                comments: [], // TODO
+              )
+            );
+          }
+          notifyListeners();
+        });
       } else {
         _loggedIn = false;
+        _follows = [];
+        _usersSubscription?.cancel();
       }
       notifyListeners();
     });

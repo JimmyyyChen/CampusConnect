@@ -8,15 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:developer';
 
-
-class NewPostScreen extends StatefulWidget {
-  const NewPostScreen({Key? key}) : super(key: key);
+class NewPostPage extends StatefulWidget {
+  const NewPostPage({Key? key}) : super(key: key);
 
   @override
-  _NewPostScreenState createState() => _NewPostScreenState();
+  _NewPostPageState createState() => _NewPostPageState();
 }
 
-class _NewPostScreenState extends State<NewPostScreen> {
+class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _postTextController = TextEditingController();
   String? _tag;
   File? _image;

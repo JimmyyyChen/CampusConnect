@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
-import 'home.dart';
-import 'favorite.dart';
-import 'following.dart';
-import 'chat.dart';
-import 'account.dart';
+import 'home_page.dart';
+// import 'favorite.dart';
+import 'following_page.dart';
+import 'chat_page.dart';
+import 'account_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,12 +41,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
   // static const TextStyle optionStyle =
   //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    FavoritePage(),
-    FollowingPage(),
-    ChatPage(),
-    AccountPage(),
+  static final List<Widget> _widgetOptions = <Widget>[
+    Consumer<ApplicationState>(
+        builder: (context, appState, _) => HomePage(
+              posts: appState.posts,
+              follows: appState.follows,
+              starPostsUID: [], // TODO
+              likePostsUID: [], // TODO
+            )),
+    // const FavoritePage(),
+    const Text("TODO: favorite page"),
+    Consumer<ApplicationState>(
+        builder: (context, appState, _) => FollowingPage(
+              follows: appState.follows,
+            )),
+    const ChatPage(),
+    const AccountPage(),
   ];
 
   void _onItemTapped(int index) {
