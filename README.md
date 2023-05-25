@@ -1,6 +1,6 @@
 # forum
 
-## usage
+## Usage
 
 flutter安装参考[[flutter](https://flutter.cn/docs/get-started/install)](https://flutter.cn/docs/get-started/test-drive)
 
@@ -9,3 +9,16 @@ flutter安装参考[[flutter](https://flutter.cn/docs/get-started/install)](http
 - `flutter upgrade`升级
 - `flutter pub get`安装依赖
 - `flutter run`运行
+
+## TroubleShoot
+
+### Resource missing
+
+resource missing when 
+
+```
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+```
+
+use default `PUB_HOSTED_URL` and `FLUTTER_STORAGE_BASE_URL` instead.

@@ -39,16 +39,8 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  // static const TextStyle optionStyle =
-  //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    Consumer<ApplicationState>(
-        builder: (context, appState, _) => HomePage(
-              posts: appState.posts,
-              follows: appState.follows,
-              starPostsUID: [], // TODO
-              likePostsUID: [], // TODO
-            )),
+    const HomePage(),
     // const FavoritePage(),
     const Text("TODO: favorite page"),
     Consumer<ApplicationState>(

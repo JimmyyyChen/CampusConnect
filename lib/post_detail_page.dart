@@ -1,24 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:forum/app_state.dart';
+import 'package:provider/provider.dart';
 
-import 'app_state.dart';
 import 'classes/post.dart';
 import 'post_widget.dart';
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
     super.key,
-    required this.post,
-    required this.isStar,
-    required this.isLike,
-    required this.isUserFollowed,
+    required this.postUid
   });
 
-  final Post post;
-  final bool isStar;
-  final bool isLike;
-  final bool isUserFollowed;
+  final String postUid;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -29,19 +24,22 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.post.authorUID),
+        title: Text("Post Detail"),
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView(
               children: [
-                Text(widget.isUserFollowed.toString()),
-                PostWidget(
-                  post: widget.post,
-                  isStar: widget.isStar,
-                  isLike: widget.isLike,
-                  isUserFollowed: widget.isUserFollowed, // TODO: BUG
+                Consumer<ApplicationState>(
+                  builder: (context, appState, _) =>
+                  PostWidget(
+                  authorUID: appState.posts[widget.postUid]!.authorUID,
+                  postTime: appState.posts[widget.postUid]!.postTime,
+                  isFollowed: appState.follows.contains(appState.posts[widget.postUid]!.authorUID),
+                  content: appState.posts[widget.postUid]!.content,
+                  type: appState.posts[widget.postUid]!.type,
+                  ),
                 ),
                 // TODO: comments view
               ],

@@ -31,8 +31,8 @@ class ApplicationState extends ChangeNotifier {
   List<String> get follows => _follows;
 
   StreamSubscription<QuerySnapshot>? _postsSubscription;
-  List<Post> _posts = [];
-  List<Post> get posts => _posts;
+  Map<String, Post> _posts = {};
+  Map<String, Post> get posts => _posts;
 
   Future<void> init() async {
     await Firebase.initializeApp(
@@ -67,20 +67,19 @@ class ApplicationState extends ChangeNotifier {
             .collection('posts')
             .snapshots()
             .listen((snapshot) {
-          _posts = [];
+          _posts = {};
           for (final document in snapshot.docs) {
-            _posts.add(Post(
+            _posts[document.id] = Post(
               authorUID: document.data()['authorUID'],
               content: document.data()['content'],
               likes: document.data()['likes'],
               location: document.data()['location'],
               pic: document.data()['pic'],
-              postId: document.data()['postId'],
               postTime: document.data()['postTime'],
               type: document.data()['type'],
               videos: document.data()['videos'],
               comments: [], // TODO
-            ));
+            );
           }
           notifyListeners();
         });

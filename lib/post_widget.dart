@@ -3,23 +3,26 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'app_state.dart';
 import 'classes/post.dart';
-import 'post_detail_page.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
-    required this.post,
-    required this.isStar,
-    required this.isLike,
-    required this.isUserFollowed,
+    required this.authorUID,
+    required this.postTime,
+    required this.isFollowed,
+    required this.content,
+    required this.type,
   });
 
-  final Post post;
-  final bool isStar;
-  final bool isLike;
-  final bool isUserFollowed;
+  final String authorUID;
+  final Timestamp postTime;
+  final bool isFollowed;
+  final String content;
+  final String type;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -53,16 +56,17 @@ class _PostWidgetState extends State<PostWidget> {
                     // Text(widget.post.authorUID),
                     // add different style for author
                     Text(
-                      widget.post.authorUID,
+                      // widget.post.authorUID,
+                      widget.authorUID,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     ),
                     Text(
-                        widget.post.postTime.toDate().toString().substring(
+                        widget.postTime.toDate().toString().substring(
                             0,
-                            widget.post.postTime.toDate().toString().length -
+                            widget.postTime.toDate().toString().length -
                                 7),
                         style: const TextStyle(
                           color: Colors.grey,
@@ -73,13 +77,13 @@ class _PostWidgetState extends State<PostWidget> {
                 const Expanded(child: SizedBox()),
                 TextButton(
                   onPressed: () async {
-                    if (widget.isUserFollowed) {
+                    if (widget.isFollowed) {
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'follows':
-                            FieldValue.arrayRemove([widget.post.authorUID])
+                            FieldValue.arrayRemove([widget.authorUID])
                       });
                     } else {
                       FirebaseFirestore.instance
@@ -87,15 +91,15 @@ class _PostWidgetState extends State<PostWidget> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'follows':
-                            FieldValue.arrayUnion([widget.post.authorUID])
+                            FieldValue.arrayUnion([widget.authorUID])
                       });
                     }
                   }, // TODO
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(widget.isUserFollowed ? Icons.check : Icons.add),
-                      Text(widget.isUserFollowed ? 'Following' : 'Follow'),
+                      Icon(widget.isFollowed ? Icons.check : Icons.add),
+                      Text(widget.isFollowed ? 'Following' : 'Follow'),
                     ],
                   ),
                 ),
@@ -103,7 +107,8 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.post.content,
+              child: Text(
+                widget.content,
                   style: const TextStyle(
                     fontSize: 20,
                   )),
@@ -117,7 +122,7 @@ class _PostWidgetState extends State<PostWidget> {
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(widget.post.type,
+                child: Text(widget.type,
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.white,
@@ -134,7 +139,7 @@ class _PostWidgetState extends State<PostWidget> {
               crossAxisSpacing: 8,
               childAspectRatio: 1,
               shrinkWrap: true,
-              children: List.generate(widget.post.pic.length, (index) {
+              children: List.generate(1, (index) {
                 // return Image.network(widget.post.images[index]);
                 // random color
                 return Container(
@@ -158,9 +163,10 @@ class _PostWidgetState extends State<PostWidget> {
                   onPressed: () {},
                   child: Row(
                     children: [
-                      Icon(widget.isLike
-                          ? Icons.favorite
-                          : Icons.favorite_border),
+                      // Icon(widget.isLike
+                      //     ? Icons.favorite
+                      //     : Icons.favorite_border),
+                      Icon(Icons.favorite_border), // TODO
                       const Text('Like'),
                     ],
                   ),
@@ -191,7 +197,8 @@ class _PostWidgetState extends State<PostWidget> {
                   onPressed: () {},
                   child: Row(
                     children: [
-                      Icon(widget.isStar ? Icons.star : Icons.star_border),
+                      // Icon(widget.isStar ? Icons.star : Icons.star_border),
+                      Icon(Icons.star_border), // TODO
                       const Text('Star'),
                     ],
                   ),

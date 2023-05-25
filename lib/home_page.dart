@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'app_state.dart';
 import 'classes/post.dart';
 import 'post_detail_page.dart';
 import 'post_widget.dart';
@@ -9,16 +11,7 @@ import 'new_post.dart';
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
-    required this.posts, // post from everyone
-    required this.follows, // current user's followings users
-    required this.starPostsUID, // whether current user star this post
-    required this.likePostsUID, // whether current user like this post
   });
-
-  final List<Post> posts;
-  final List<String> follows;
-  final List<String> starPostsUID;
-  final List<String> likePostsUID;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -53,34 +46,30 @@ class _HomePageState extends State<HomePage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-          itemCount: widget.posts.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return PostDetailPage(
-                    post: widget.posts[index],
-                    isStar: widget.starPostsUID
-                        .contains(widget.posts[index].postId),
-                    isLike: widget.likePostsUID
-                        .contains(widget.posts[index].postId),
-                    isUserFollowed:
-                        widget.follows.contains(widget.posts[index].authorUID),
-                  );
-                }));
-              },
-              child: PostWidget(
-                post: widget.posts[index],
-                isStar:
-                    widget.starPostsUID.contains(widget.posts[index].postId),
-                isLike:
-                    widget.likePostsUID.contains(widget.posts[index].postId),
-                isUserFollowed:
-                    widget.follows.contains(widget.posts[index].authorUID),
-              ),
-            );
-          }),
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) => 
+        ListView.builder(
+            itemCount: appState.posts.length,
+            itemBuilder: (context, index) {
+              String postUid = appState.posts.keys.elementAt(index);
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return PostDetailPage(
+                      postUid: postUid,
+                    );
+                  }));
+                },
+                child: PostWidget(
+                  authorUID: appState.posts[postUid]!.authorUID,
+                  postTime: appState.posts[postUid]!.postTime,
+                  isFollowed: appState.follows.contains(appState.posts[postUid]!.authorUID),
+                  content: appState.posts[postUid]!.content,
+                  type: appState.posts[postUid]!.type,
+                ),
+              );
+            }),
+      ),
     );
   }
 }
