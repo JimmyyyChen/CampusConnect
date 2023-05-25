@@ -194,7 +194,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       });
                       print("sahngchuan");
                       Navigator.pop(context);
-                      Navigator.pop(context);
                     },
                     child: const Text(
                       "SAVE",

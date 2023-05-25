@@ -7,12 +7,21 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'classes/post.dart';
+import 'classes/user.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
+  //本地默认用户设置；
+  static UserData localUser = UserData(
+    uID: "001",
+    name: "name",
+    profileImage:
+        'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
+    introduction: "我的简介",
+  );
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
@@ -60,20 +69,18 @@ class ApplicationState extends ChangeNotifier {
             .listen((snapshot) {
           _posts = [];
           for (final document in snapshot.docs) {
-            _posts.add(
-              Post( 
-                authorUID: document.data()['authorUID'],
-                content: document.data()['content'],
-                likes: document.data()['likes'],
-                location: document.data()['location'],
-                pic: document.data()['pic'],
-                postId: document.data()['postId'],
-                postTime: document.data()['postTime'],
-                type: document.data()['type'],
-                videos: document.data()['videos'],
-                comments: [], // TODO
-              )
-            );
+            _posts.add(Post(
+              authorUID: document.data()['authorUID'],
+              content: document.data()['content'],
+              likes: document.data()['likes'],
+              location: document.data()['location'],
+              pic: document.data()['pic'],
+              postId: document.data()['postId'],
+              postTime: document.data()['postTime'],
+              type: document.data()['type'],
+              videos: document.data()['videos'],
+              comments: [], // TODO
+            ));
           }
           notifyListeners();
         });
