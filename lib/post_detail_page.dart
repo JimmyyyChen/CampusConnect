@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:forum/app_state.dart';
 import 'package:provider/provider.dart';
 
-import 'classes/post.dart';
 import 'post_widget.dart';
 
 class PostDetailPage extends StatefulWidget {
@@ -18,17 +19,19 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   late FocusNode commentFocusNode;
+  late TextEditingController commentController;
 
   @override
   void initState() {
     super.initState();
-
     commentFocusNode = FocusNode();
+    commentController = TextEditingController();
   }
 
   @override
   void dispose() {
     commentFocusNode.dispose();
+    commentController.dispose();
     super.dispose();
   }
 
@@ -36,7 +39,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Post Detail"),
+        title: const Text("Post"),
       ),
       body: Column(
         children: [
@@ -59,7 +62,42 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         commentFocusNode.requestFocus();
                       }),
                 ),
-                // TODO: comments view
+                Consumer<ApplicationState>(
+                  builder: (context, appState, _) =>
+                      StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('posts')
+                        .doc(widget.postUid)
+                        .collection('comments')
+                        .orderBy('commentTime', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text('Something went wrong');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot comment = snapshot.data!.docs[index];
+                          return CommentWidget(
+                            name: comment['authorUid'],
+                            content: comment['content'],
+                            commentTime: comment['commentTime'],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -70,15 +108,39 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
-                      focusNode: commentFocusNode,
-                      decoration: const InputDecoration(
-                        hintText: "Write a comment...",
-                      ),
-                    ),
+                        controller: commentController,
+                        focusNode: commentFocusNode,
+                        decoration: const InputDecoration(
+                          hintText: "Write a comment...",
+                        ),
+                        onSubmitted: (String value) {
+                          FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(widget.postUid)
+                              .collection('comments')
+                              .add({
+                            'authorUid': FirebaseAuth.instance.currentUser!.uid,
+                            'content': value,
+                            'commentTime': Timestamp.now(),
+                          });
+                          commentController.clear();
+                        }),
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    FirebaseFirestore.instance
+                        .collection('posts')
+                        .doc(widget.postUid)
+                        .collection('comments')
+                        .add({
+                      'authorUid': FirebaseAuth.instance.currentUser!.uid,
+                      'content': commentController.text,
+                      'commentTime': Timestamp.now(),
+                    });
+                    commentController.clear();
+                    commentFocusNode.unfocus();
+                  },
                   icon: const Icon(Icons.send),
                 ),
               ],
@@ -93,10 +155,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
 class CommentWidget extends StatelessWidget {
   const CommentWidget({
     super.key,
-    required this.comment,
+    required this.name,
+    required this.content,
+    required this.commentTime,
   });
 
-  final Comment comment;
+  final String name;
+  final String content;
+  final Timestamp commentTime;
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +180,20 @@ class CommentWidget extends StatelessWidget {
               // random color
               backgroundColor: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
             ),
+            const SizedBox(width: 8.0),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(comment.name),
-                Text(comment.commentTime.toString()),
-                Text(comment.content),
+                Text(
+                  name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                    commentTime.toDate().toString().substring(
+                        0, commentTime.toDate().toString().length - 7),
+                    style: const TextStyle(fontSize: 10.0)),
+                const SizedBox(height: 8.0),
+                Text(content),
               ],
             ),
           ],
