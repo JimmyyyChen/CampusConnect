@@ -3,10 +3,6 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'app_state.dart';
-import 'classes/post.dart';
 
 class PostWidget extends StatefulWidget {
   const PostWidget({
@@ -19,6 +15,7 @@ class PostWidget extends StatefulWidget {
     required this.type,
     required this.isFavorite,
     required this.isLike,
+    required this.comment,
   });
 
   final String postUid;
@@ -29,6 +26,7 @@ class PostWidget extends StatefulWidget {
   final String type;
   final bool isFavorite;
   final bool isLike;
+  final void Function() comment;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -178,7 +176,7 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: widget.comment,
                   child: const Row(
                     children: [
                       Icon(Icons.comment),

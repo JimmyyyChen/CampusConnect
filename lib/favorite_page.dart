@@ -34,38 +34,42 @@ class _FavoritePageState extends State<FavoritePage> {
         ],
       ),
       body: Consumer<ApplicationState>(
-        builder: (context, appState, _) =>
-            appState.favoritePostsId.isEmpty
-                ? const Center(
-                    child: Text("No favorite posts"),
-                  )
-                : ListView.builder(
-                    itemCount: appState.posts.length,
-                    itemBuilder: (context, index) {
-                      String postUid = appState.posts.keys.elementAt(index);
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return PostDetailPage(
-                              postUid: postUid,
-                            );
-                          }));
-                        },
-                        child: PostWidget(
+        builder: (context, appState, _) => appState.favoritePostsId.isEmpty
+            ? const Center(
+                child: Text("No favorite posts"),
+              )
+            : ListView.builder(
+                itemCount: appState.posts.length,
+                itemBuilder: (context, index) {
+                  String postUid = appState.posts.keys.elementAt(index);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return PostDetailPage(
                           postUid: postUid,
-                          authorUID: appState.posts[postUid]!.authorUID,
-                          postTime: appState.posts[postUid]!.postTime,
-                          content: appState.posts[postUid]!.content,
-                          type: appState.posts[postUid]!.type,
-                          isFollowed: appState.follows
-                              .contains(appState.posts[postUid]!.authorUID),
-                          isFavorite:
-                              appState.favoritePostsId.contains(postUid),
-                          isLike: appState.likedPostsId.contains(postUid),
-                        ),
-                      );
-                    }),
+                        );
+                      }));
+                    },
+                    child: PostWidget(
+                      postUid: postUid,
+                      authorUID: appState.posts[postUid]!.authorUID,
+                      postTime: appState.posts[postUid]!.postTime,
+                      content: appState.posts[postUid]!.content,
+                      type: appState.posts[postUid]!.type,
+                      isFollowed: appState.follows
+                          .contains(appState.posts[postUid]!.authorUID),
+                      isFavorite: appState.favoritePostsId.contains(postUid),
+                      isLike: appState.likedPostsId.contains(postUid),
+                      comment: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return PostDetailPage(
+                            postUid: postUid,
+                          );
+                        }));
+                      },
+                    ),
+                  );
+                }),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
-import 'classes/post.dart';
 import 'post_detail_page.dart';
 import 'post_widget.dart';
 import 'search_page.dart';
@@ -68,6 +67,13 @@ class _HomePageState extends State<HomePage> {
                   isFollowed: appState.follows.contains(appState.posts[postUid]!.authorUID),
                   isFavorite: appState.favoritePostsId.contains(postUid),
                   isLike: appState.likedPostsId.contains(postUid),
+                  comment: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      return PostDetailPage(
+                        postUid: postUid,
+                      );
+                    }));
+                  },
                 ),
               );
             }),

@@ -17,6 +17,21 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  late FocusNode commentFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    commentFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    commentFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,31 +45,33 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: [
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => PostWidget(
-                    postUid: widget.postUid,
-                    authorUID: appState.posts[widget.postUid]!.authorUID,
-                    postTime: appState.posts[widget.postUid]!.postTime,
-                    isFollowed: appState.follows
-                        .contains(appState.posts[widget.postUid]!.authorUID),
-                    content: appState.posts[widget.postUid]!.content,
-                    type: appState.posts[widget.postUid]!.type,
-                    isFavorite: appState.favoritePostsId.contains(widget.postUid),
-                    isLike: appState.likedPostsId.contains(widget.postUid),
-                  ),
+                      postUid: widget.postUid,
+                      authorUID: appState.posts[widget.postUid]!.authorUID,
+                      postTime: appState.posts[widget.postUid]!.postTime,
+                      isFollowed: appState.follows
+                          .contains(appState.posts[widget.postUid]!.authorUID),
+                      content: appState.posts[widget.postUid]!.content,
+                      type: appState.posts[widget.postUid]!.type,
+                      isFavorite:
+                          appState.favoritePostsId.contains(widget.postUid),
+                      isLike: appState.likedPostsId.contains(widget.postUid),
+                      comment: () {
+                        commentFocusNode.requestFocus();
+                      }),
                 ),
                 // TODO: comments view
               ],
             ),
           ),
           SafeArea(
-            child:
-                //  a input bar for comment
-                Row(
+            child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      focusNode: commentFocusNode,
+                      decoration: const InputDecoration(
                         hintText: "Write a comment...",
                       ),
                     ),
