@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'app_state.dart';
 import 'home_page.dart';
-// import 'favorite.dart';
+import 'favorite_page.dart';
 import 'following_page.dart';
 import 'account_page.dart';
 import 'all_users.dart';
@@ -39,18 +39,9 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  // static const TextStyle optionStyle =
-  //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    Consumer<ApplicationState>(
-        builder: (context, appState, _) => HomePage(
-              posts: appState.posts,
-              follows: appState.follows,
-              starPostsUID: [], // TODO
-              likePostsUID: [], // TODO
-            )),
-    // const FavoritePage(),
-    const Text("TODO: favorite page"),
+    const HomePage(),
+    const FavoritePage(),
     Consumer<ApplicationState>(
         builder: (context, appState, _) => FollowingPage(
               follows: appState.follows,

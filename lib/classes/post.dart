@@ -2,12 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
   const Post({
-    required this.authorUID, 
+    required this.authorUID,
     required this.content,
     required this.likes,
     required this.location,
     required this.pic,
-    required this.postId,
     required this.postTime,
     required this.type,
     required this.videos,
@@ -19,12 +18,10 @@ class Post {
   final int likes;
   final GeoPoint location;
   final String pic; // TODO: single image
-  final String postId;
   final Timestamp postTime;
   final String type;
   final String videos; // TODO: single video
   final List<Comment> comments;
-
 }
 
 class Comment {

@@ -4,22 +4,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'classes/post.dart';
-import 'post_detail_page.dart';
-
 class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
-    required this.post,
-    required this.isStar,
+    required this.postUid,
+    required this.authorUID,
+    required this.postTime,
+    required this.isFollowed,
+    required this.content,
+    required this.type,
+    required this.isFavorite,
     required this.isLike,
-    required this.isUserFollowed,
+    required this.comment,
   });
 
-  final Post post;
-  final bool isStar;
+  final String postUid;
+  final String authorUID;
+  final Timestamp postTime;
+  final bool isFollowed;
+  final String content;
+  final String type;
+  final bool isFavorite;
   final bool isLike;
-  final bool isUserFollowed;
+  final void Function() comment;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -53,17 +60,16 @@ class _PostWidgetState extends State<PostWidget> {
                     // Text(widget.post.authorUID),
                     // add different style for author
                     Text(
-                      widget.post.authorUID,
+                      // widget.post.authorUID,
+                      widget.authorUID,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     ),
                     Text(
-                        widget.post.postTime.toDate().toString().substring(
-                            0,
-                            widget.post.postTime.toDate().toString().length -
-                                7),
+                        widget.postTime.toDate().toString().substring(
+                            0, widget.postTime.toDate().toString().length - 7),
                         style: const TextStyle(
                           color: Colors.grey,
                         )),
@@ -73,29 +79,27 @@ class _PostWidgetState extends State<PostWidget> {
                 const Expanded(child: SizedBox()),
                 TextButton(
                   onPressed: () async {
-                    if (widget.isUserFollowed) {
+                    if (widget.isFollowed) {
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows':
-                            FieldValue.arrayRemove([widget.post.authorUID])
+                        'follows': FieldValue.arrayRemove([widget.authorUID])
                       });
                     } else {
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows':
-                            FieldValue.arrayUnion([widget.post.authorUID])
+                        'follows': FieldValue.arrayUnion([widget.authorUID])
                       });
                     }
                   }, // TODO
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(widget.isUserFollowed ? Icons.check : Icons.add),
-                      Text(widget.isUserFollowed ? 'Following' : 'Follow'),
+                      Icon(widget.isFollowed ? Icons.check : Icons.add),
+                      Text(widget.isFollowed ? 'Following' : 'Follow'),
                     ],
                   ),
                 ),
@@ -103,7 +107,7 @@ class _PostWidgetState extends State<PostWidget> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.post.content,
+              child: Text(widget.content,
                   style: const TextStyle(
                     fontSize: 20,
                   )),
@@ -117,7 +121,7 @@ class _PostWidgetState extends State<PostWidget> {
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(widget.post.type,
+                child: Text(widget.type,
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.white,
@@ -134,7 +138,7 @@ class _PostWidgetState extends State<PostWidget> {
               crossAxisSpacing: 8,
               childAspectRatio: 1,
               shrinkWrap: true,
-              children: List.generate(widget.post.pic.length, (index) {
+              children: List.generate(1, (index) {
                 // return Image.network(widget.post.images[index]);
                 // random color
                 return Container(
@@ -145,28 +149,34 @@ class _PostWidgetState extends State<PostWidget> {
             Row(
               children: [
                 TextButton(
-                  // TODO:
-                  // onPressed: () => setState(() {
-                  //   widget.isLike = !widget.isLike;
-                  //   // TODO: logic
-                  //   // if (PostWidget.isLike) {
-                  //   //   widget.post.likes++;
-                  //   // } else {
-                  //   //   widget.post.likes--;
-                  //   // }
-                  // }),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (widget.isLike) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'likedPostsId':
+                            FieldValue.arrayRemove([widget.postUid])
+                      });
+                    } else {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'likedPostsId':
+                            FieldValue.arrayUnion([widget.postUid])
+                      });
+                    }
+                  },
                   child: Row(
                     children: [
-                      Icon(widget.isLike
-                          ? Icons.favorite
-                          : Icons.favorite_border),
+                      Icon(widget.isLike ? Icons.thumb_up : Icons.thumb_up_alt_outlined),
                       const Text('Like'),
                     ],
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: widget.comment,
                   child: const Row(
                     children: [
                       Icon(Icons.comment),
@@ -184,15 +194,29 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
                 TextButton(
-                  // TODO:
-                  // onPressed: () => setState(() {
-                  //   widget.isStar = !widget.isStar;
-                  // }),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (widget.isFavorite) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'favoritePostsId':
+                            FieldValue.arrayRemove([widget.postUid])
+                      });
+                    } else {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'favoritePostsId':
+                            FieldValue.arrayUnion([widget.postUid])
+                      });
+                    }
+                  },
                   child: Row(
                     children: [
-                      Icon(widget.isStar ? Icons.star : Icons.star_border),
-                      const Text('Star'),
+                      Icon(widget.isFavorite ? Icons.star : Icons.star_border),
+                      const Text('Favorite'),
                     ],
                   ),
                 ),
