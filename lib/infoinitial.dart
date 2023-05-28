@@ -169,27 +169,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       _about = aboutController.text;
                       print(_userName);
                       print(_about);
-                      final String? uID =
+                      final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
-                      print(uID);
+                      print(uid);
                       firebase_storage.Reference storageRef = firebase_storage
                           .FirebaseStorage.instance
                           .ref()
                           .child('profiles')
-                          .child(uID!);
+                          .child(uid!);
                       print(storageRef);
                       // await storageRef.putFile(File(_imageUrl));
                       UploadTask uploadTask =
                           storageRef.putFile(File(_imageUrl));
                       TaskSnapshot snap = await uploadTask;
                       String downloadurl = await snap.ref.getDownloadURL();
-                      FirebaseFirestore.instance
+                      FirebaseFirestore.instance // TODO: change Uses model
                           .collection('users')
-                          .doc(uID)
+                          .doc(uid)
                           .set({
                         'name': _userName, //,yes I know.
                         'profile': downloadurl,
-                        'uID': uID,
+                        'uid': uid,
                         'introduction': _about
                       });
                       print("sahngchuan");

@@ -44,7 +44,7 @@ class ApplicationState extends ChangeNotifier {
           // get current user's followings list
           _follows = [];
           for (final document in snapshot.docs) {
-            if (document.data()['uID'] == user.uid) {
+            if (document.data()['uid'] == user.uid) {
               for (final following in document.data()['follows']) {
                 _follows.add(following);
               }
