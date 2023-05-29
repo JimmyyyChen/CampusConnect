@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // see users collection in firestore
 class UserData {
-
   final String uid;
   final String name;
   final String introduction;
@@ -21,9 +20,4 @@ class UserData {
     this.following = const [],
     this.followers = const [],
   });
-
 }
-
-
-
-

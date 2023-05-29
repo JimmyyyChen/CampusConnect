@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/app_state.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'home_page.dart';
@@ -14,25 +15,26 @@ import 'settings_page.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:io';
 
-class InfoInitialPage extends StatefulWidget {
-  const InfoInitialPage({Key? key}) : super(key: key);
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({Key? key}) : super(key: key);
 
   @override
-  _InfoInitialPageState createState() => _InfoInitialPageState();
+  _EditProfilePageState createState() => _EditProfilePageState();
 }
 
-class _InfoInitialPageState extends State<InfoInitialPage> {
+class _EditProfilePageState extends State<EditProfilePage> {
   String currentUser =
       (FirebaseAuth.instance.currentUser as User).email.toString();
   TextEditingController displayNameController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
 
   String? _userName;
-  String _imageUrl =
-      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80';
-  String? _about;
+  String _imageUrl = ApplicationState().localUser.profileImage;
+  String? _about = ApplicationState().localUser.introduction;
   late File _image;
 
+  String _profile = ApplicationState().localUser.profileImage;
+  String _introduction = ApplicationState().localUser.introduction;
   Future<void> _getImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -186,7 +188,7 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                       FirebaseFirestore.instance // TODO: change Uses model
                           .collection('users')
                           .doc(uid)
-                          .set({
+                          .update({
                         'name': _userName, //,yes I know.
                         'profile': downloadurl,
                         'uid': uid,
