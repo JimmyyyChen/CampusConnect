@@ -47,7 +47,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               follows: appState.follows,
             )),
     const UsersPage(),
-    const AccountPage(),
+    Consumer<ApplicationState>(
+        builder: (context, appState, _) => AccountPage(
+              loggedIn: appState.loggedIn,
+              localUser: appState.localUser,
+            )),
   ];
 
   void _onItemTapped(int index) {
