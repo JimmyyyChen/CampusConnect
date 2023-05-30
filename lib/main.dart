@@ -5,8 +5,8 @@ import 'app_state.dart';
 import 'home_page.dart';
 import 'favorite_page.dart';
 import 'following_page.dart';
-import 'chat_page.dart';
 import 'account_page.dart';
+import 'all_users.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +46,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         builder: (context, appState, _) => FollowingPage(
               follows: appState.follows,
             )),
-    const ChatPage(),
-    const AccountPage(),
+    const UsersPage(),
+    Consumer<ApplicationState>(
+        builder: (context, appState, _) => AccountPage(
+              loggedIn: appState.loggedIn,
+              localUser: appState.localUser,
+            )),
   ];
 
   void _onItemTapped(int index) {

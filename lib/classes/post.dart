@@ -37,12 +37,12 @@ class Comment {
     required this.content,
     required this.name,
     required this.profileImage, // TODO: firestore has different name
-    required this.uID,
+    required this.uid,
   });
 
   final Timestamp commentTime;
   final String content;
   final String name;
   final String profileImage;
-  final String uID;
+  final String uid;
 }
