@@ -4,29 +4,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'classes/post.dart';
+import 'post_content_viewer.dart';
+
 class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
-    required this.postUid,
-    required this.authorUID,
-    required this.postTime,
+    required this.post,
+    required this.commentAction,
     required this.isFollowed,
-    required this.content,
-    required this.type,
-    required this.isFavorite,
     required this.isLike,
-    required this.comment,
+    required this.isFavorite,
   });
 
-  final String postUid;
-  final String authorUID;
-  final Timestamp postTime;
+  final Post post;
+  final void Function() commentAction;
   final bool isFollowed;
-  final String content;
-  final String type;
-  final bool isFavorite;
   final bool isLike;
-  final void Function() comment;
+  final bool isFavorite;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -57,19 +52,21 @@ class _PostWidgetState extends State<PostWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Text(widget.post.authorUID),
-                    // add different style for author
+                    // cut author name if too long
                     Text(
-                      // widget.post.authorUID,
-                      widget.authorUID,
+                      widget.post.authoruid.length > 10
+                          ? widget.post.authoruid.substring(0, 10) + '...'
+                          : widget.post.authoruid,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
                     ),
                     Text(
-                        widget.postTime.toDate().toString().substring(
-                            0, widget.postTime.toDate().toString().length - 7),
+                        widget.post.postTime.toDate().toString().substring(
+                            0,
+                            widget.post.postTime.toDate().toString().length -
+                                7),
                         style: const TextStyle(
                           color: Colors.grey,
                         )),
@@ -84,14 +81,16 @@ class _PostWidgetState extends State<PostWidget> {
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows': FieldValue.arrayRemove([widget.authorUID])
+                        'follows':
+                            FieldValue.arrayRemove([widget.post.authoruid])
                       });
                     } else {
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
-                        'follows': FieldValue.arrayUnion([widget.authorUID])
+                        'follows':
+                            FieldValue.arrayUnion([widget.post.authoruid])
                       });
                     }
                   }, // TODO
@@ -105,47 +104,31 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(widget.content,
-                  style: const TextStyle(
-                    fontSize: 20,
-                  )),
+            PostContentViewer(
+              fontColor: widget.post.fontColor,
+              fontSize: widget.post.fontSize,
+              markdownText: widget.post.markdownText,
             ),
+
             // tag
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(6.0),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(8.0),
+            if (widget.post.tag != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(6.0),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text(widget.post.tag!,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                      )),
                 ),
-                child: Text(widget.type,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                    )),
               ),
-            ),
-            // TODO: read images from firebase storage
-            GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1,
-              shrinkWrap: true,
-              children: List.generate(1, (index) {
-                // return Image.network(widget.post.images[index]);
-                // random color
-                return Container(
-                  color: Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
-                );
-              }),
-            ),
             Row(
               children: [
                 TextButton(
@@ -156,7 +139,7 @@ class _PostWidgetState extends State<PostWidget> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'likedPostsId':
-                            FieldValue.arrayRemove([widget.postUid])
+                            FieldValue.arrayRemove([widget.post.postuid])
                       });
                     } else {
                       FirebaseFirestore.instance
@@ -164,19 +147,21 @@ class _PostWidgetState extends State<PostWidget> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'likedPostsId':
-                            FieldValue.arrayUnion([widget.postUid])
+                            FieldValue.arrayUnion([widget.post.postuid])
                       });
                     }
                   },
                   child: Row(
                     children: [
-                      Icon(widget.isLike ? Icons.thumb_up : Icons.thumb_up_alt_outlined),
+                      Icon(widget.isLike
+                          ? Icons.thumb_up
+                          : Icons.thumb_up_alt_outlined),
                       const Text('Like'),
                     ],
                   ),
                 ),
                 TextButton(
-                  onPressed: widget.comment,
+                  onPressed: widget.commentAction,
                   child: const Row(
                     children: [
                       Icon(Icons.comment),
@@ -201,7 +186,7 @@ class _PostWidgetState extends State<PostWidget> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'favoritePostsId':
-                            FieldValue.arrayRemove([widget.postUid])
+                            FieldValue.arrayRemove([widget.post.postuid])
                       });
                     } else {
                       FirebaseFirestore.instance
@@ -209,7 +194,7 @@ class _PostWidgetState extends State<PostWidget> {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
                         'favoritePostsId':
-                            FieldValue.arrayUnion([widget.postUid])
+                            FieldValue.arrayUnion([widget.post.postuid])
                       });
                     }
                   },

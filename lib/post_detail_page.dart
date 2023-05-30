@@ -48,17 +48,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: [
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => PostWidget(
-                      postUid: widget.postUid,
-                      authorUID: appState.posts[widget.postUid]!.authorUID,
-                      postTime: appState.posts[widget.postUid]!.postTime,
-                      isFollowed: appState.follows
-                          .contains(appState.posts[widget.postUid]!.authorUID),
-                      content: appState.posts[widget.postUid]!.content,
-                      type: appState.posts[widget.postUid]!.type,
-                      isFavorite:
-                          appState.favoritePostsId.contains(widget.postUid),
+                      post: appState.posts[widget.postUid]!,
+                      isFavorite: appState.favoritePostsId.contains(widget.postUid),
+                      isFollowed: appState.follows.contains(appState.posts[widget.postUid]!.authoruid),
                       isLike: appState.likedPostsId.contains(widget.postUid),
-                      comment: () {
+                      commentAction: () {
                         commentFocusNode.requestFocus();
                       }),
                 ),

@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:forum/post_content_viewer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
@@ -19,7 +21,7 @@ class NewPostPage extends StatefulWidget {
 class _NewPostPageState extends State<NewPostPage> {
   final TextEditingController _postTextController = TextEditingController();
   String? _tag;
-  File? _image;
+  File? _imageFile;
   VideoPlayerController? _videoPlayerController;
   File? _videoFile;
   Position? _currentPosition;
@@ -67,7 +69,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
     if (image != null) {
       setState(() {
-        _image = File(image.path);
+        _imageFile = File(image.path);
         _videoFile = null;
       });
     }
@@ -84,7 +86,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
     if (image != null) {
       setState(() {
-        _image = File(image.path);
+        _imageFile = File(image.path);
         _videoFile = null;
       });
     }
@@ -101,12 +103,12 @@ class _NewPostPageState extends State<NewPostPage> {
 
     if (image != null) {
       setState(() {
-        _image = null;
+        _imageFile = null;
         _videoFile = File(image.path);
         _videoPlayerController = VideoPlayerController.file(_videoFile!)
           ..initialize().then((_) {
             setState(() {
-              _image = null;
+              _imageFile = null;
             });
           });
       });
@@ -124,12 +126,12 @@ class _NewPostPageState extends State<NewPostPage> {
 
     if (image != null) {
       setState(() {
-        _image = null;
+        _imageFile = null;
         _videoFile = File(image.path);
         _videoPlayerController = VideoPlayerController.file(_videoFile!)
           ..initialize().then((_) {
             setState(() {
-              _image = null;
+              _imageFile = null;
             });
           });
       });
@@ -193,7 +195,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       controller: _postTextController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: '请输入您的帖子内容',
+                        hintText: '请输入Markdown文本',
                       ),
                       style: TextStyle(
                         color: _fontColor,
@@ -205,87 +207,14 @@ class _NewPostPageState extends State<NewPostPage> {
                     )
                   : ListView(
                       children: [
-                        if (_postTextController.text.isNotEmpty)
-                          MarkdownBody(
-                            data: _postTextController.text,
-                            styleSheet: MarkdownStyleSheet(
-                              // every thin has same color
-                              p: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize,
-                              ),
-                              h1: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 2,
-                              ),
-                              h2: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 1.5,
-                              ),
-                              h3: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 1.17,
-                              ),
-                              h4: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 1.12,
-                              ),
-                              h5: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 1.07,
-                              ),
-                              h6: TextStyle(
-                                color: _fontColor,
-                                fontSize: _fontSize * 1.05,
-                              ),
-                              listBullet: TextStyle(
-                                  color: _fontColor, fontSize: _fontSize),
-                            ),
-                          )
-                        else
-                          const Center(
-                            child: Text(
-                              'Markdown文本为空',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                        const SizedBox(height: 8),
-                        // TODO
-                        _image == null
-                            ? Container()
-                            : Image.file(_image!,
-                                width: MediaQuery.of(context).size.width / 2,
-                                height: MediaQuery.of(context).size.width / 2),
-                        _videoFile == null
-                            ? Container()
-                            :
-                            // video player and progress indicator
-                            Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (_videoPlayerController!
-                                            .value.isPlaying) {
-                                          _videoPlayerController!.pause();
-                                        } else {
-                                          _videoPlayerController!.play();
-                                        }
-                                      });
-                                    },
-                                    child: SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      child: AspectRatio(
-                                        aspectRatio: _videoPlayerController!
-                                            .value.aspectRatio,
-                                        child: VideoPlayer(
-                                            _videoPlayerController!),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                        PostContentViewer(
+                          markdownText: _postTextController.text,
+                          fontSize: _fontSize,
+                          fontColor: _fontColor,
+                          imageFile: _imageFile,
+                          videoFile: _videoFile,
+                          videoPlayerController: _videoPlayerController,
+                        )
                       ],
                     ),
             ),
@@ -418,28 +347,24 @@ class _NewPostPageState extends State<NewPostPage> {
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
-                // 在这里添加发布帖子的逻辑
-                final String postText = _postTextController.text;
-                print('您输入的帖子内容是： $postText');
-                if (_image != null) {
-                  // 处理上传图片的逻辑
-                  print('您上传的图片路径是： ${_image!.path}');
-                }
-                if (_videoFile != null) {
-                  // 处理上传视频的逻辑
-                  print('您上传的视频路径是： ${_videoFile!.path}');
-                }
-                if (_currentPosition != null) {
-                  // 处理位置信息的逻辑
-                  final double latitude = _currentPosition!.latitude;
-                  final double longitude = _currentPosition!.longitude;
-                  print('您的位置信息是： $latitude, $longitude');
-                  // log('您的位置信息是： $latitude, $longitude');
-                }
-                if (_tag != null) {
-                  // 处理帖子标签的逻辑
-                  print('您选择的标签是： $_tag');
-                }
+                FirebaseFirestore.instance.collection('posts').add({
+                  'authoruid': FirebaseAuth.instance.currentUser!.uid,
+                  'markdownText': _postTextController.text,
+                  'postTime': Timestamp.now(),
+                  'tag': _tag,
+                  'location': _currentPosition == null
+                      ? null
+                      : GeoPoint(_currentPosition!.latitude,
+                          _currentPosition!.longitude),
+                  'fontColor': _fontColor.value,
+                  'fontSize': _fontSize,
+                  'likeCount': 0,
+                  // TODO
+                  // 'image' : _image == null ? null : _image!.path,
+                  // 'video' : _videoFile == null ? null : _videoFile!.path,
+                  // comments collection would be added in post_detail_page.dart if there is a comment
+                });
+
                 Navigator.pop(context);
               },
               child: const Text('发布'),

@@ -84,14 +84,18 @@ class ApplicationState extends ChangeNotifier {
           _posts = {};
           for (final document in snapshot.docs) {
             _posts[document.id] = Post(
-              authorUID: document.data()['authorUID'],
-              content: document.data()['content'],
-              likes: document.data()['likes'],
+              postuid: document.id,
+              authoruid: document.data()['authoruid'],
+              // get color from number such as 4288423856
+              fontColor: Color(document.data()['fontColor']),
+              fontSize: document.data()['fontSize'],
+              likeCount: document.data()['likeCount'],
               location: document.data()['location'],
-              pic: document.data()['pic'],
+              markdownText: document.data()['markdownText'],
               postTime: document.data()['postTime'],
-              type: document.data()['type'],
-              videos: document.data()['videos'],
+              tag: document.data()['type'],
+              // imageFile: document.data()['pic'],
+              // videoFile: document.data()['videos'],
               comments: [], // TODO
             );
           }

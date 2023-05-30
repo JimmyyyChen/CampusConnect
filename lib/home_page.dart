@@ -59,15 +59,11 @@ class _HomePageState extends State<HomePage> {
                   }));
                 },
                 child: PostWidget(
-                  postUid: postUid,
-                  authorUID: appState.posts[postUid]!.authorUID,
-                  postTime: appState.posts[postUid]!.postTime,
-                  content: appState.posts[postUid]!.content,
-                  type: appState.posts[postUid]!.type,
-                  isFollowed: appState.follows.contains(appState.posts[postUid]!.authorUID),
-                  isFavorite: appState.favoritePostsId.contains(postUid),
-                  isLike: appState.likedPostsId.contains(postUid),
-                  comment: () {
+                  post: appState.posts[postUid]!,
+                                        isFavorite: appState.favoritePostsId.contains(postUid),
+                      isFollowed: appState.follows.contains(appState.posts[postUid]!.authoruid),
+                      isLike: appState.likedPostsId.contains(postUid),
+                  commentAction: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return PostDetailPage(
                         postUid: postUid,

@@ -41,6 +41,10 @@ class _FavoritePageState extends State<FavoritePage> {
             : ListView.builder(
                 itemCount: appState.posts.length,
                 itemBuilder: (context, index) {
+                  if (!appState.favoritePostsId
+                      .contains(appState.posts.keys.elementAt(index))) {
+                    return const SizedBox.shrink();
+                  }
                   String postUid = appState.posts.keys.elementAt(index);
                   return GestureDetector(
                     onTap: () {
@@ -51,16 +55,12 @@ class _FavoritePageState extends State<FavoritePage> {
                       }));
                     },
                     child: PostWidget(
-                      postUid: postUid,
-                      authorUID: appState.posts[postUid]!.authorUID,
-                      postTime: appState.posts[postUid]!.postTime,
-                      content: appState.posts[postUid]!.content,
-                      type: appState.posts[postUid]!.type,
-                      isFollowed: appState.follows
-                          .contains(appState.posts[postUid]!.authorUID),
+                      post: appState.posts[postUid]!,
                       isFavorite: appState.favoritePostsId.contains(postUid),
+                      isFollowed: appState.follows
+                          .contains(appState.posts[postUid]!.authoruid),
                       isLike: appState.likedPostsId.contains(postUid),
-                      comment: () {
+                      commentAction: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return PostDetailPage(
                             postUid: postUid,
