@@ -96,7 +96,7 @@ class _NewPostPageState extends State<NewPostPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
@@ -105,7 +105,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 decoration: const InputDecoration(
                   hintText: '请输入您的帖子内容',
                 ),
-                maxLines: null,
+                maxLines: 10,
                 onChanged: (_) {
                   // 在用户输入或编辑帖子内容时更新 Markdown 格式的文本
                   setState(() {});
@@ -198,10 +198,13 @@ class _NewPostPageState extends State<NewPostPage> {
             ),
             const SizedBox(height: 16.0),
             Expanded(
-              child: MarkdownBody(
-                data: _postTextController.text,
+              child: SingleChildScrollView(
+                child: MarkdownBody(
+                  data: _postTextController.text,
+                ),
               ),
             ),
+
           ],
         ),
       ),

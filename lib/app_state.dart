@@ -16,7 +16,7 @@ class ApplicationState extends ChangeNotifier {
   }
   //本地默认用户设置；
   static UserData localUser = UserData(
-    uID: "001",
+    uid: "001",
     name: "name",
     profileImage:
         'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
