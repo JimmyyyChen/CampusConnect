@@ -120,6 +120,7 @@ class ApplicationState extends ChangeNotifier {
               // videoFile: document.data()['videos'],
               // comments: document.collection(comment)
               commentCount:document.data()['commentCount'],
+              favoriteCount:document.data()['favoriteCount'],
             );
           }
           notifyListeners();

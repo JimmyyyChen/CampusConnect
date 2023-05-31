@@ -359,6 +359,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   'fontSize': _fontSize,
                   'likeCount': 0,
                   'commentCount': 0,
+                  'favoriteCount': 0,
                   // TODO
                   // 'image' : _image == null ? null : _image!.path,
                   // 'video' : _videoFile == null ? null : _videoFile!.path,

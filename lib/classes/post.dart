@@ -9,6 +9,7 @@ class Post {
     required this.likeCount,
     required this.postTime,
     required this.commentCount,
+    required this.favoriteCount,
     required this.fontColor,
     required this.fontSize,
     this.tag,
@@ -23,6 +24,7 @@ class Post {
   final int likeCount;
   final Timestamp postTime;
   final int commentCount;
+  final int favoriteCount;
   final double fontSize;
   final Color fontColor;
   final String? tag;

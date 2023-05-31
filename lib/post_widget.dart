@@ -222,6 +222,13 @@ class _PostWidgetState extends State<PostWidget> {
                         'favoritePostsId':
                             FieldValue.arrayRemove([widget.post.postuid])
                       });
+                      // update favoriteCount to post
+                      FirebaseFirestore.instance
+                          .collection('posts')
+                          .doc(widget.post.postuid)
+                          .update({
+                        'favoriteCount': FieldValue.increment(-1),
+                      });
                     } else {
                       FirebaseFirestore.instance
                           .collection('users')
@@ -230,12 +237,19 @@ class _PostWidgetState extends State<PostWidget> {
                         'favoritePostsId':
                             FieldValue.arrayUnion([widget.post.postuid])
                       });
+                      // update favoriteCount to post
+                      FirebaseFirestore.instance
+                          .collection('posts')
+                          .doc(widget.post.postuid)
+                          .update({
+                        'favoriteCount': FieldValue.increment(1),
+                      });
                     }
                   },
                   child: Row(
                     children: [
                       Icon(widget.isFavorite ? Icons.star : Icons.star_border),
-                      const Text('Favorite'),
+                      Text('Favorite ${widget.post.favoriteCount}'),
                     ],
                   ),
                 ),
