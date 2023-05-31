@@ -190,7 +190,11 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         'name': _userName, //,yes I know.
                         'profile': downloadurl,
                         'uid': uid,
-                        'introduction': _about
+                        'introduction': _about,
+                        'favoritePostsId': [],
+                        'follows': [],
+                        'likedPostsId': [],
+                        'blocks': [],
                       });
                       print("sahngchuan");
                       Navigator.pop(context);

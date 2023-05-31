@@ -1,7 +1,12 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/app_state.dart';
 import 'dart:math';
+
+import 'package:forum/profile_page.dart';
 
 class FollowingPage extends StatelessWidget {
   FollowingPage({
@@ -25,11 +30,25 @@ class FollowingPage extends StatelessWidget {
               // title: Text(users[index].id), TODO
               // subtitle: Text(users[index].name),
               // profile image
-              leading: CircleAvatar(
-                // backgroundColor: Colors.blue,
-                // random blue color
-                backgroundColor:
-                    Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+              leading: GestureDetector(
+                onTap: () {
+                  ApplicationState()
+                      .setToseeProfile("M0MAz9RQcUTGg6Q8RMy4lqki4TA3");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        //todo
+                        builder: (context) =>
+                            ProfilePage(uid: "M0MAz9RQcUTGg6Q8RMy4lqki4TA3"),
+                      ));
+                },
+                child: CircleAvatar(
+                  radius: 50.0,
+                  //todo
+                  backgroundImage:
+                      NetworkImage(ApplicationState().localUser.profileImage),
+                  child: Container(),
+                ),
               ),
               trailing: ElevatedButton(
                 onPressed: () {

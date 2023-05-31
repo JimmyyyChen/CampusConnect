@@ -23,6 +23,14 @@ class ApplicationState extends ChangeNotifier {
     introduction: "我的简介",
   );
 
+  UserData toseeUser = UserData(
+    uid: '0000001',
+    name: "name",
+    profileImage:
+        'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
+    introduction: "我的简介",
+  );
+
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
   void setLoggedIn(value) {
@@ -44,24 +52,24 @@ class ApplicationState extends ChangeNotifier {
   Map<String, Post> get posts => _posts;
 
   Future<void> init() async {
-
     // TODO: BUG
-    // FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(FirebaseAuth.instance.currentUser?.uid)
-    //     .snapshots()
-    //     .listen((DocumentSnapshot snapshot) {
-    //   print("更新了");
-    //   Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
-    //   localUser = UserData(
-    //     uid: userData['uid'],
-    //     name: userData['name'],
-    //     profileImage: userData['profile'],
-    //     introduction: userData['introduction'],
-    //   );
-    //   print(localUser.introduction);
-    //   notifyListeners();
-    // });
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      print("更新了");
+      if (snapshot.data() == null) return;
+      Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+      localUser = UserData(
+        uid: userData['uid'],
+        name: userData['name'],
+        profileImage: userData['profile'],
+        introduction: userData['introduction'],
+      );
+      print(localUser.introduction);
+      notifyListeners();
+    });
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -145,6 +153,29 @@ class ApplicationState extends ChangeNotifier {
         _postsSubscription?.cancel();
       }
       notifyListeners();
+    });
+  }
+
+  void setToseeProfile(String s) {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(s)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> userData =
+            documentSnapshot.data() as Map<String, dynamic>;
+        toseeUser = UserData(
+          uid: userData['uid'],
+          name: userData['name'],
+          profileImage: userData['profile'],
+          introduction: userData['introduction'],
+        );
+        print("这是新的");
+        print(toseeUser.profileImage);
+      }
+    }).catchError((error) {
+      print('Error getting user data: $error');
     });
   }
 }
