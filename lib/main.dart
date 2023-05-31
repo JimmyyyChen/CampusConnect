@@ -56,7 +56,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         builder: (context, appState, _) => FollowingPage(
               follows: appState.follows,
             )),
-    const UsersPage(),
+    Consumer<ApplicationState>(
+        builder: (context, appState, _) => UsersPage(
+          follows: appState.follows,
+        )),
     Consumer<ApplicationState>(
         builder: (context, appState, _) => AccountPage(
               loggedIn: appState.loggedIn,
