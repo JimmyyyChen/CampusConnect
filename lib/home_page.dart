@@ -49,24 +49,25 @@ class _HomePageState extends State<HomePage> {
         builder: (context, appState, _) => ListView.builder(
             itemCount: appState.posts.length,
             itemBuilder: (context, index) {
-              String postUid = appState.posts.keys.elementAt(index);
+              String postuid = appState.posts.keys.elementAt(index);
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return PostDetailPage(
-                      postUid: postUid,
+                      postUid: postuid,
                     );
                   }));
                 },
                 child: PostWidget(
-                  post: appState.posts[postUid]!,
-                                        isFavorite: appState.favoritePostsId.contains(postUid),
-                      isFollowed: appState.follows.contains(appState.posts[postUid]!.authoruid),
-                      isLike: appState.likedPostsId.contains(postUid),
+                  post: appState.posts[postuid]!,
+                  isFavorite: appState.favoritePostsId.contains(postuid),
+                  isFollowed: appState.follows
+                      .contains(appState.posts[postuid]!.authoruid),
+                  isLike: appState.likedPostsId.contains(postuid),
                   commentAction: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return PostDetailPage(
-                        postUid: postUid,
+                        postUid: postuid,
                       );
                     }));
                   },

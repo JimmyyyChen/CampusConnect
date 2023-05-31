@@ -109,26 +109,46 @@ class _PostWidgetState extends State<PostWidget> {
               fontSize: widget.post.fontSize,
               markdownText: widget.post.markdownText,
             ),
-
-            // tag
-            if (widget.post.tag != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.all(6.0),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(8.0),
+            Row(
+              children: [
+                // tag
+                if (widget.post.tag != null)
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(widget.post.tag!,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
                   ),
-                  child: Text(widget.post.tag!,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                      )),
-                ),
-              ),
+
+                // location
+                if (widget.post.location != null)
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Text(
+                          '位置(${widget.post.location!.latitude.toStringAsFixed(2)}, ${widget.post.location!.longitude.toStringAsFixed(2)})',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ),
+              ],
+            ),
             Row(
               children: [
                 TextButton(

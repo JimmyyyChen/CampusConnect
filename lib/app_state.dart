@@ -44,29 +44,24 @@ class ApplicationState extends ChangeNotifier {
   Map<String, Post> get posts => _posts;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
 
-    FirebaseUIAuth.configureProviders([
-      EmailAuthProvider(),
-    ]);
-
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      print("更新了");
-      Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
-      localUser = UserData(
-        uid: userData['uid'],
-        name: userData['name'],
-        profileImage: userData['profile'],
-        introduction: userData['introduction'],
-      );
-      print(localUser.introduction);
-      notifyListeners();
-    });
+    // TODO: BUG
+    // FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(FirebaseAuth.instance.currentUser?.uid)
+    //     .snapshots()
+    //     .listen((DocumentSnapshot snapshot) {
+    //   print("更新了");
+    //   Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+    //   localUser = UserData(
+    //     uid: userData['uid'],
+    //     name: userData['name'],
+    //     profileImage: userData['profile'],
+    //     introduction: userData['introduction'],
+    //   );
+    //   print(localUser.introduction);
+    //   notifyListeners();
+    // });
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -106,14 +101,13 @@ class ApplicationState extends ChangeNotifier {
             _posts[document.id] = Post(
               postuid: document.id,
               authoruid: document.data()['authoruid'],
-              // get color from number such as 4288423856
               fontColor: Color(document.data()['fontColor']),
               fontSize: document.data()['fontSize'],
               likeCount: document.data()['likeCount'],
               location: document.data()['location'],
               markdownText: document.data()['markdownText'],
               postTime: document.data()['postTime'],
-              tag: document.data()['type'],
+              tag: document.data()['tag'],
               // imageFile: document.data()['pic'],
               // videoFile: document.data()['videos'],
               comments: [], // TODO
@@ -146,6 +140,7 @@ class ApplicationState extends ChangeNotifier {
         _follows = [];
         _favoritePostsId = [];
         _likedPostsId = [];
+        _posts = {};
         _usersSubscription?.cancel();
         _postsSubscription?.cancel();
       }
