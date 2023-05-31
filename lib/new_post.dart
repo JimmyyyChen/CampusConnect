@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:forum/post_content_viewer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
@@ -157,7 +156,7 @@ class _NewPostPageState extends State<NewPostPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-          child: Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
@@ -359,6 +358,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   'fontColor': _fontColor.value,
                   'fontSize': _fontSize,
                   'likeCount': 0,
+                  'commentCount': 0,
                   // TODO
                   // 'image' : _image == null ? null : _image!.path,
                   // 'video' : _videoFile == null ? null : _videoFile!.path,

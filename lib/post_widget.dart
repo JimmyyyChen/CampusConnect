@@ -161,6 +161,13 @@ class _PostWidgetState extends State<PostWidget> {
                         'likedPostsId':
                             FieldValue.arrayRemove([widget.post.postuid])
                       });
+                      // decrease likeCount to post
+                      FirebaseFirestore.instance
+                          .collection('posts')
+                          .doc(widget.post.postuid)
+                          .update({
+                        'likeCount': FieldValue.increment(-1),
+                      });
                     } else {
                       FirebaseFirestore.instance
                           .collection('users')
@@ -169,6 +176,13 @@ class _PostWidgetState extends State<PostWidget> {
                         'likedPostsId':
                             FieldValue.arrayUnion([widget.post.postuid])
                       });
+                      // add likeCount to post
+                      FirebaseFirestore.instance
+                          .collection('posts')
+                          .doc(widget.post.postuid)
+                          .update({
+                        'likeCount': FieldValue.increment(1),
+                      });
                     }
                   },
                   child: Row(
@@ -176,7 +190,7 @@ class _PostWidgetState extends State<PostWidget> {
                       Icon(widget.isLike
                           ? Icons.thumb_up
                           : Icons.thumb_up_alt_outlined),
-                      const Text('Like'),
+                      Text('Like ${widget.post.likeCount}'),
                     ],
                   ),
                 ),
@@ -190,7 +204,7 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},//TODO : 分享界面实现
+                  onPressed: () {}, //TODO : 分享界面实现
                   child: const Row(
                     children: [
                       Icon(Icons.share),

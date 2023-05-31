@@ -58,8 +58,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             )),
     Consumer<ApplicationState>(
         builder: (context, appState, _) => UsersPage(
-          follows: appState.follows,
-        )),
+              follows: appState.follows,
+            )),
     Consumer<ApplicationState>(
         builder: (context, appState, _) => AccountPage(
               loggedIn: appState.loggedIn,
@@ -93,11 +93,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   return;
                 }
 
-                // if (state is SignedIn) {
-                  // Navigator.pop(context);
-                // }
                 if (state is UserCreated) {
-                  //todo
                   //跳转到profile创建页面
                   user.updateDisplayName(user.email!.split('@')[0]);
                   Navigator.push(
@@ -105,7 +101,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     MaterialPageRoute(
                         builder: (context) => const InfoInitialPage()),
                   );
-                  // Navigator.pop(context);
                 }
               }
             })

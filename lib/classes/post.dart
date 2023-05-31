@@ -8,7 +8,7 @@ class Post {
     required this.markdownText,
     required this.likeCount,
     required this.postTime,
-    required this.comments,
+    required this.commentCount,
     required this.fontColor,
     required this.fontSize,
     this.tag,
@@ -22,7 +22,7 @@ class Post {
   final String markdownText;
   final int likeCount;
   final Timestamp postTime;
-  final List<Comment> comments;
+  final int commentCount;
   final double fontSize;
   final Color fontColor;
   final String? tag;
@@ -33,16 +33,14 @@ class Post {
 
 class Comment {
   const Comment({
+    required this.uid,
+    required this.authorUid,
     required this.commentTime,
     required this.content,
-    required this.name,
-    required this.profileImage, // TODO: firestore has different name
-    required this.uid,
   });
 
+  final String uid;
+  final String authorUid;
   final Timestamp commentTime;
   final String content;
-  final String name;
-  final String profileImage;
-  final String uid;
 }

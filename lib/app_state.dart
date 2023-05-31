@@ -118,7 +118,8 @@ class ApplicationState extends ChangeNotifier {
               tag: document.data()['tag'],
               // imageFile: document.data()['pic'],
               // videoFile: document.data()['videos'],
-              comments: [], // TODO
+              // comments: document.collection(comment)
+              commentCount:document.data()['commentCount'],
             );
           }
           notifyListeners();

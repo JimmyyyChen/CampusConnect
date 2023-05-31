@@ -49,8 +49,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => PostWidget(
                       post: appState.posts[widget.postUid]!,
-                      isFavorite: appState.favoritePostsId.contains(widget.postUid),
-                      isFollowed: appState.follows.contains(appState.posts[widget.postUid]!.authoruid),
+                      isFavorite:
+                          appState.favoritePostsId.contains(widget.postUid),
+                      isFollowed: appState.follows
+                          .contains(appState.posts[widget.postUid]!.authoruid),
                       isLike: appState.likedPostsId.contains(widget.postUid),
                       commentAction: () {
                         commentFocusNode.requestFocus();
@@ -117,6 +119,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             'content': value,
                             'commentTime': Timestamp.now(),
                           });
+                          // add commentCount
+                          FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(widget.postUid)
+                              .update({
+                            'commentCount': FieldValue.increment(1),
+                          });
                           commentController.clear();
                         }),
                   ),
@@ -131,6 +140,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       'authorUid': FirebaseAuth.instance.currentUser!.uid,
                       'content': commentController.text,
                       'commentTime': Timestamp.now(),
+                    });
+                    // add commentCount
+                    FirebaseFirestore.instance
+                        .collection('posts')
+                        .doc(widget.postUid)
+                        .update({
+                      'commentCount': FieldValue.increment(1),
                     });
                     commentController.clear();
                     commentFocusNode.unfocus();
