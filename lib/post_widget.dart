@@ -190,7 +190,7 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {},//TODO : 分享界面实现
                   child: const Row(
                     children: [
                       Icon(Icons.share),

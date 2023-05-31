@@ -12,12 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class UsersPage extends StatefulWidget {
-  const UsersPage({Key? key}) : super(key: key);
 
+
+class UsersPage extends StatefulWidget {
+  final List<String> follows;
+  UsersPage({
+    super.key,
+    required this.follows,
+  });
   @override
   State<UsersPage> createState() => _UsersPageState();
+
 }
+
+
 
 class _UsersPageState extends State<UsersPage> {
   ChatProvider chatProvider = ChatProvider();
@@ -29,7 +37,8 @@ class _UsersPageState extends State<UsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("this uid is" +FirebaseAuth.instance.currentUser!.uid);
+    // print("this uid is" +FirebaseAuth.instance.currentUser!.uid);
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text("Users"),
@@ -40,9 +49,8 @@ class _UsersPageState extends State<UsersPage> {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection("users")
-              .where('uid',
-              isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .collection('users')
+              .where('uid', whereIn: widget.follows) // 使用whereIn来选择包含在follows列表中的用户
               .snapshots(),
           builder: ((context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
