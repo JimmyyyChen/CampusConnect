@@ -41,6 +41,9 @@ class ApplicationState extends ChangeNotifier {
   List<String> _follows = [];
   List<String> get follows => _follows;
 
+  List<String> _blocks = [];
+  List<String> get blocks => _follows;
+
   List<String> _favoritePostsId = [];
   List<String> get favoritePostsId => _favoritePostsId;
 

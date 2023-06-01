@@ -20,10 +20,73 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = "";
-  bool follow = false;
-  bool block = false;
+  bool followed = false;
+  bool blocked = false;
 
-  // TODO: Implement functions for button actions
+  void blockUser() {
+    setState(() {
+      blocked = true;
+      followed = false;
+    });
+  }
+
+  void unblockUser() {
+    setState(() {
+      blocked = false;
+    });
+  }
+
+  void followUser() {
+    if (!blocked) {
+      setState(() {
+        followed = true;
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('提示'),
+          content: Text('需要先解除屏蔽对方'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('确定'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void unfollowUser() {
+    setState(() {
+      followed = false;
+    });
+  }
+
+  void sendMessage() {
+    if (followed) {
+      // 处理发送私信逻辑
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('提示'),
+          content: Text('需要先关注对方'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('确定'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   UserData _userData = UserData(
     uid: "",
@@ -34,8 +97,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    super.initState();
+    blocked = ApplicationState().blocks.contains(widget.uid);
+    followed = ApplicationState().follows.contains(widget.uid);
     _fetchUserData();
+    super.initState();
   }
 
   Future<void> _fetchUserData() async {
@@ -55,7 +120,9 @@ class _ProfilePageState extends State<ProfilePage> {
       introduction: userData['introduction'],
     );
     // 数据获取完成后触发UI更新
-    setState(() {});
+    setState(() {
+      _userData = _userData;
+    });
   }
 
   @override
@@ -64,169 +131,224 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: Text('个人主页'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                // onTap: () {
-                // },
-                child: Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 4,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 2,
-                        blurRadius: 10,
-                        color: Colors.black.withOpacity(0.1),
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.contain,
-                      image: NetworkImage(_userData.profileImage),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                _userData.name,
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8.0),
-              Text(
-                _userData.introduction,
-                style: TextStyle(fontSize: 16.0),
-              ),
-              SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // TODO: Handle block user functionality
-                    },
-                    child: Text('Block'),
-                  ),
-                  SizedBox(width: 8.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (block) {
-                        // 已被屏蔽，显示提示
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('提示'),
-                            content: Text('对方已被您屏蔽'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    block = false;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Text('确定'),
-                              ),
-                            ],
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) => Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      // onTap: () {
+                      // },
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                           ),
-                        );
-                      } else {
-                        // 处理 block 按钮点击事件
-                        // ...
-                      }
-                    },
-                    child: Text(block ? 'Blocked' : 'Block'),
-                  ),
-                  SizedBox(height: 8.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (!follow) {
-                        // 需要先关注，显示提示
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('提示'),
-                            content: Text('需要先关注对方'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    follow = true;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                                child: Text('确定'),
-                              ),
-                            ],
+                          boxShadow: [
+                            BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.contain,
+                            image: NetworkImage(_userData.profileImage),
                           ),
-                        );
-                      } else {
-                        // 处理 follow/unfollow 按钮点击事件
-                        // ...
-                      }
-                    },
-                    child: Text(follow ? 'Followed' : 'Follow'),
-                  ),
-                  SizedBox(height: 8.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      // 处理发送私信按钮点击事件
-                      // ...
-                    },
-                    child: Text('Send Message'),
-                  ),
-                ],
-              ),
-              Consumer<ApplicationState>(
-                builder: (context, appState, _) => ListView.builder(
-                    itemCount: appState.posts.length,
-                    itemBuilder: (context, index) {
-                      String postuid = appState.posts.keys.elementAt(index);
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return PostDetailPage(
-                              postUid: postuid,
-                            );
-                          }));
-                        },
-                        child: PostWidget(
-                          post: appState.posts[postuid]!,
-                          isFavorite:
-                              appState.favoritePostsId.contains(postuid),
-                          isFollowed: appState.follows
-                              .contains(appState.posts[postuid]!.authoruid),
-                          isLike: appState.likedPostsId.contains(postuid),
-                          commentAction: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                              return PostDetailPage(
-                                postUid: postuid,
-                              );
-                            }));
-                          },
                         ),
-                      );
-                    }),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      _userData.name,
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      _userData.introduction,
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 8.0),
+                        ElevatedButton(
+                          onPressed: blocked ? unblockUser : blockUser,
+                          child: Text(blocked ? 'Unblock' : 'Block'),
+                        ),
+                        SizedBox(height: 8.0),
+                        ElevatedButton(
+                          onPressed: followed ? unfollowUser : followUser,
+                          child: Text(followed ? 'Unfollow' : 'Follow'),
+                        ),
+                        SizedBox(height: 8.0),
+                        ElevatedButton(
+                          onPressed: sendMessage,
+                          child: Text('Send'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+            Divider(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: appState.posts.length,
+                itemBuilder: (context, index) {
+                  String postuid = appState.posts.keys.elementAt(index);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return PostDetailPage(
+                          postUid: postuid,
+                        );
+                      }));
+                    },
+                    child: PostWidget(
+                      post: appState.posts[postuid]!,
+                      isFavorite: appState.favoritePostsId.contains(postuid),
+                      isFollowed: appState.follows
+                          .contains(appState.posts[postuid]!.authoruid),
+                      isLike: appState.likedPostsId.contains(postuid),
+                      commentAction: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return PostDetailPage(
+                            postUid: postuid,
+                          );
+                        }));
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
+      // body: Consumer<ApplicationState>(
+      //     builder: (context, appState, _) => ListView(children: [
+      //           Padding(
+      //             padding: EdgeInsets.all(16.0),
+      //             child: Center(
+      //               child: Column(
+      //                 // mainAxisAlignment: MainAxisAlignment.center,
+      //                 children: [
+      //                   GestureDetector(
+      //                     // onTap: () {
+      //                     // },
+      //                     child: Container(
+      //                       width: 130,
+      //                       height: 130,
+      //                       decoration: BoxDecoration(
+      //                         border: Border.all(
+      //                           width: 4,
+      //                           color:
+      //                               Theme.of(context).scaffoldBackgroundColor,
+      //                         ),
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             spreadRadius: 2,
+      //                             blurRadius: 10,
+      //                             color: Colors.black.withOpacity(0.1),
+      //                             offset: const Offset(0, 10),
+      //                           ),
+      //                         ],
+      //                         shape: BoxShape.circle,
+      //                         image: DecorationImage(
+      //                           fit: BoxFit.contain,
+      //                           image: NetworkImage(_userData.profileImage),
+      //                         ),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                   SizedBox(height: 16.0),
+      //                   Text(
+      //                     _userData.name,
+      //                     style: TextStyle(
+      //                       fontSize: 24.0,
+      //                       fontWeight: FontWeight.bold,
+      //                     ),
+      //                   ),
+      //                   SizedBox(height: 8.0),
+      //                   Text(
+      //                     _userData.introduction,
+      //                     style: TextStyle(fontSize: 16.0),
+      //                   ),
+      //                   SizedBox(height: 16.0),
+      //                   Row(
+      //                     mainAxisAlignment: MainAxisAlignment.center,
+      //                     children: [
+      //                       SizedBox(width: 8.0),
+      //                       ElevatedButton(
+      //                         onPressed: blocked ? unblockUser : blockUser,
+      //                         child: Text(blocked ? 'Unblock' : 'Block'),
+      //                       ),
+      //                       SizedBox(height: 8.0),
+      //                       ElevatedButton(
+      //                         onPressed: followed ? unfollowUser : followUser,
+      //                         child: Text(followed ? 'Unfollow' : 'Follow'),
+      //                       ),
+      //                       SizedBox(height: 8.0),
+      //                       ElevatedButton(
+      //                         onPressed: sendMessage,
+      //                         child: Text('Send'),
+      //                       ),
+      //                     ],
+      //                   ),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //           Divider(),
+      //           Consumer<ApplicationState>(
+      //             builder: (context, appState, _) => ListView.builder(
+      //                 itemCount: appState.posts.length,
+      //                 itemBuilder: (context, index) {
+      //                   String postuid = appState.posts.keys.elementAt(index);
+      //                   return GestureDetector(
+      //                     onTap: () {
+      //                       Navigator.push(context,
+      //                           MaterialPageRoute(builder: (_) {
+      //                         return PostDetailPage(
+      //                           postUid: postuid,
+      //                         );
+      //                       }));
+      //                     },
+      //                     child: PostWidget(
+      //                       post: appState.posts[postuid]!,
+      //                       isFavorite:
+      //                           appState.favoritePostsId.contains(postuid),
+      //                       isFollowed: appState.follows
+      //                           .contains(appState.posts[postuid]!.authoruid),
+      //                       isLike: appState.likedPostsId.contains(postuid),
+      //                       commentAction: () {
+      //                         Navigator.push(context,
+      //                             MaterialPageRoute(builder: (_) {
+      //                           return PostDetailPage(
+      //                             postUid: postuid,
+      //                           );
+      //                         }));
+      //                       },
+      //                     ),
+      //                   );
+      //                 }),
+      //           ),
+      //         ]))
     );
   }
 }
