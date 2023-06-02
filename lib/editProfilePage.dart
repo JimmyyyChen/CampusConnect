@@ -174,19 +174,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
                       print(uid);
-                      // firebase_storage.Reference storageRef = firebase_storage
-                      //     .FirebaseStorage.instance
-                      //     .ref()
-                      //     .child('profiles')
-                      //     .child(uid!);
-                      // print(storageRef);
-                      // // await storageRef.putFile(File(_imageUrl));
-                      // UploadTask uploadTask =
-                      //     storageRef.putFile(File(_imageUrl));
-                      // TaskSnapshot snap = await uploadTask;
-                      // String downloadurl = await snap.ref.getDownloadURL();
+                      firebase_storage.Reference storageRef = firebase_storage
+                          .FirebaseStorage.instance
+                          .ref()
+                          .child('profiles')
+                          .child(uid!);
+                      print(storageRef);
+                      // await storageRef.putFile(File(_imageUrl));
+                      UploadTask uploadTask =
+                          storageRef.putFile(File(_imageUrl));
+                      TaskSnapshot snap = await uploadTask;
+                      String downloadurl = await snap.ref.getDownloadURL();
 
-                      String downloadurl = _imageUrl;
+                      // String downloadurl = _imageUrl;
                       FirebaseFirestore.instance // TODO: change Uses model
                           .collection('users')
                           .doc(uid)

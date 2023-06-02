@@ -24,6 +24,12 @@ class _ProfilePageState extends State<ProfilePage> {
   bool blocked = false;
 
   void blockUser() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'blocks': FieldValue.arrayUnion([widget.uid])
+    });
     setState(() {
       blocked = true;
       followed = false;
@@ -31,6 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void unblockUser() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'blocks': FieldValue.arrayRemove([widget.uid])
+    });
     setState(() {
       blocked = false;
     });
@@ -38,6 +50,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void followUser() {
     if (!blocked) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'follows': FieldValue.arrayUnion([widget.uid])
+      });
       setState(() {
         followed = true;
       });
@@ -61,6 +79,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void unfollowUser() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'follows': FieldValue.arrayRemove([widget.uid])
+    });
     setState(() {
       followed = false;
     });
@@ -69,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void sendMessage() {
     if (followed) {
       // 处理发送私信逻辑
+      //todo
     } else {
       showDialog(
         context: context,
@@ -122,6 +147,10 @@ class _ProfilePageState extends State<ProfilePage> {
     // 数据获取完成后触发UI更新
     setState(() {
       _userData = _userData;
+      followed = ApplicationState().follows.contains(widget.uid);
+      print("follows: ${ApplicationState().follows}");
+      print("uid: ${widget.uid}");
+      print("followed: $followed");
     });
   }
 
@@ -240,115 +269,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      // body: Consumer<ApplicationState>(
-      //     builder: (context, appState, _) => ListView(children: [
-      //           Padding(
-      //             padding: EdgeInsets.all(16.0),
-      //             child: Center(
-      //               child: Column(
-      //                 // mainAxisAlignment: MainAxisAlignment.center,
-      //                 children: [
-      //                   GestureDetector(
-      //                     // onTap: () {
-      //                     // },
-      //                     child: Container(
-      //                       width: 130,
-      //                       height: 130,
-      //                       decoration: BoxDecoration(
-      //                         border: Border.all(
-      //                           width: 4,
-      //                           color:
-      //                               Theme.of(context).scaffoldBackgroundColor,
-      //                         ),
-      //                         boxShadow: [
-      //                           BoxShadow(
-      //                             spreadRadius: 2,
-      //                             blurRadius: 10,
-      //                             color: Colors.black.withOpacity(0.1),
-      //                             offset: const Offset(0, 10),
-      //                           ),
-      //                         ],
-      //                         shape: BoxShape.circle,
-      //                         image: DecorationImage(
-      //                           fit: BoxFit.contain,
-      //                           image: NetworkImage(_userData.profileImage),
-      //                         ),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   SizedBox(height: 16.0),
-      //                   Text(
-      //                     _userData.name,
-      //                     style: TextStyle(
-      //                       fontSize: 24.0,
-      //                       fontWeight: FontWeight.bold,
-      //                     ),
-      //                   ),
-      //                   SizedBox(height: 8.0),
-      //                   Text(
-      //                     _userData.introduction,
-      //                     style: TextStyle(fontSize: 16.0),
-      //                   ),
-      //                   SizedBox(height: 16.0),
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.center,
-      //                     children: [
-      //                       SizedBox(width: 8.0),
-      //                       ElevatedButton(
-      //                         onPressed: blocked ? unblockUser : blockUser,
-      //                         child: Text(blocked ? 'Unblock' : 'Block'),
-      //                       ),
-      //                       SizedBox(height: 8.0),
-      //                       ElevatedButton(
-      //                         onPressed: followed ? unfollowUser : followUser,
-      //                         child: Text(followed ? 'Unfollow' : 'Follow'),
-      //                       ),
-      //                       SizedBox(height: 8.0),
-      //                       ElevatedButton(
-      //                         onPressed: sendMessage,
-      //                         child: Text('Send'),
-      //                       ),
-      //                     ],
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           ),
-      //           Divider(),
-      //           Consumer<ApplicationState>(
-      //             builder: (context, appState, _) => ListView.builder(
-      //                 itemCount: appState.posts.length,
-      //                 itemBuilder: (context, index) {
-      //                   String postuid = appState.posts.keys.elementAt(index);
-      //                   return GestureDetector(
-      //                     onTap: () {
-      //                       Navigator.push(context,
-      //                           MaterialPageRoute(builder: (_) {
-      //                         return PostDetailPage(
-      //                           postUid: postuid,
-      //                         );
-      //                       }));
-      //                     },
-      //                     child: PostWidget(
-      //                       post: appState.posts[postuid]!,
-      //                       isFavorite:
-      //                           appState.favoritePostsId.contains(postuid),
-      //                       isFollowed: appState.follows
-      //                           .contains(appState.posts[postuid]!.authoruid),
-      //                       isLike: appState.likedPostsId.contains(postuid),
-      //                       commentAction: () {
-      //                         Navigator.push(context,
-      //                             MaterialPageRoute(builder: (_) {
-      //                           return PostDetailPage(
-      //                             postUid: postuid,
-      //                           );
-      //                         }));
-      //                       },
-      //                     ),
-      //                   );
-      //                 }),
-      //           ),
-      //         ]))
     );
   }
 }
