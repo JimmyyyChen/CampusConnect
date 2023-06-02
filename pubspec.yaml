@@ -49,13 +49,14 @@ dependencies:
   firebase_storage: ^11.2.1
   encrypt: ^5.0.1
   firebase_messaging:
-  flutter_local_notifications:
+  flutter_local_notifications: ^14.1.0
   either_dart:
   fluttertoast:
   country_list_pick: ^1.0.1+6
   pin_code_fields: ^7.4.0
   flutter_colorpicker: ^1.0.3
   camera: ^0.10.5+2
+  firebase_analytics:
 
 dev_dependencies:
   flutter_test:

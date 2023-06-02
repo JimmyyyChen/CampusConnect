@@ -31,13 +31,15 @@ class _UsersPageState extends State<UsersPage> {
   ChatProvider chatProvider = ChatProvider();
   @override
   void initState() {
-    // chatProvider.registerNotification();
+    chatProvider.registerNotification();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // print("this uid is" +FirebaseAuth.instance.currentUser!.uid);
+    //test mess
+
     String uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
