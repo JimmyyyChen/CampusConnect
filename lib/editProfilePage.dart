@@ -185,6 +185,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           storageRef.putFile(File(_imageUrl));
                       TaskSnapshot snap = await uploadTask;
                       String downloadurl = await snap.ref.getDownloadURL();
+
+                      // String downloadurl = _imageUrl;
                       FirebaseFirestore.instance // TODO: change Uses model
                           .collection('users')
                           .doc(uid)

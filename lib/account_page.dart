@@ -22,6 +22,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   // String _profile = ApplicationState().localUser.profileImage;
   // String _introduction = ApplicationState().localUser.introduction;
+  var localUser = ApplicationState().localUser;
   @override
   Widget build(BuildContext context) {
     User? currentUser = FirebaseAuth.instance.currentUser;
@@ -42,114 +43,135 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ],
           ),
-          body: Consumer<ApplicationState>(builder: (context, appState, _) {
-            final localUser = appState.localUser;
-            return ListView(
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 4,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          spreadRadius: 2,
-                          blurRadius: 10,
-                          color: Colors.black.withOpacity(0.1),
-                          offset: const Offset(0, 10),
+          body: Consumer<ApplicationState>(
+              builder: (context, appState, _) => ListView(
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 4,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(0.1),
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.contain,
+                              image: NetworkImage(
+                                appState.localUser.profileImage,
+                              ),
+                            ),
+                          ),
                         ),
-                      ],
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.contain,
-                        image: NetworkImage(
-                          localUser.profileImage,
+                      ),
+                      Center(
+                        child: Text(
+                          appState.localUser.name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    appState.localUser.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Consumer<ApplicationState>(
-                    builder: (context, appState, _) => ListTile(
-                          title: appState.loggedIn
-                              ? const Text('Log Out')
-                              : const Text('Log In'),
-                          onTap: () {
-                            if (appState.loggedIn) {
-                              FirebaseAuth.instance.signOut();
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignInScreen(
-                                            actions: [
-                                              AuthStateChangeAction(
-                                                  (context, state) {
-                                                if (state is SignedIn ||
-                                                    state is UserCreated) {
-                                                  var user = (state is SignedIn)
-                                                      ? state.user
-                                                      : (state as UserCreated)
-                                                          .credential
-                                                          .user;
-                                                  if (user == null) {
-                                                    return;
-                                                  }
-                                                  if (state is SignedIn) {
-                                                    Navigator.pop(context);
-                                                  }
-                                                  if (state is UserCreated) {
-                                                    //todo
-                                                    //跳转到profile创建页面
+                      Center(
+                        child: Text(
+                          appState.localUser.introduction,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Consumer<ApplicationState>(
+                          builder: (context, appState, _) => ListTile(
+                                title: appState.loggedIn
+                                    ? const Text('Log Out')
+                                    : const Text('Log In'),
+                                onTap: () {
+                                  if (appState.loggedIn) {
+                                    FirebaseAuth.instance.signOut();
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SignInScreen(
+                                                  actions: [
+                                                    AuthStateChangeAction(
+                                                        (context, state) {
+                                                      if (state is SignedIn ||
+                                                          state
+                                                              is UserCreated) {
+                                                        var user = (state
+                                                                is SignedIn)
+                                                            ? state.user
+                                                            : (state
+                                                                    as UserCreated)
+                                                                .credential
+                                                                .user;
+                                                        if (user == null) {
+                                                          return;
+                                                        }
+                                                        if (state is SignedIn) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                        if (state
+                                                            is UserCreated) {
+                                                          //todo
+                                                          //跳转到profile创建页面
 
-                                                    appState.setLoggedIn(true);
-                                                    user.updateDisplayName(user
-                                                        .email!
-                                                        .split('@')[0]);
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const EditProfilePage()),
-                                                    );
-                                                    Navigator.pop(context);
-                                                  }
-                                                }
-                                              })
-                                            ],
-                                          )));
-                            }
-                          },
-                        )),
-                ListTile(
-                  title: const Text('Edit Profile'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditProfilePage()),
-                    );
-                  },
-                ),
-              ],
-            );
-          }));
+                                                          appState.setLoggedIn(
+                                                              true);
+                                                          user.updateDisplayName(
+                                                              user.email!.split(
+                                                                  '@')[0]);
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const EditProfilePage()),
+                                                          );
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                      }
+                                                    })
+                                                  ],
+                                                )));
+                                  }
+                                },
+                              )),
+                      ListTile(
+                        title: const Text('Edit Profile'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const EditProfilePage()),
+                          );
+                          setState(() {
+                            localUser = ApplicationState().localUser;
+                          });
+                          print("运行过setState()");
+                        },
+                      ),
+                    ],
+                  )));
     } else {
       return Scaffold(
           appBar: AppBar(
@@ -157,8 +179,8 @@ class _AccountPageState extends State<AccountPage> {
             actions: [
               IconButton(
                 icon: const Icon(
-                  Icons.settings,//TODO:
-                  
+                  Icons.settings, //TODO:
+
                   color: Colors.white,
                 ),
                 onPressed: () {

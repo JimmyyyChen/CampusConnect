@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -172,6 +174,7 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                       final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
                       print(uid);
+                      String? token = await FirebaseMessaging.instance.getToken();
                       firebase_storage.Reference storageRef = firebase_storage
                           .FirebaseStorage.instance
                           .ref()
@@ -195,6 +198,7 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         'follows': [],
                         'likedPostsId': [],
                         'blocks': [],
+                        'fcmToken':token,
                       });
                       print("sahngchuan");
                       Navigator.pop(context);

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
 
 import '../constants/Firebase_constant.dart';
 
@@ -11,13 +12,55 @@ class ChatProvider {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  // Constructor
+  ChatProvider() {
+    configLocalNotification();
+  }
+
+  void configLocalNotification() {
+    AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('ic_launcher');  // <--- Use the name of your notification icon file here
+    DarwinInitializationSettings initializationSettingsIOS =
+    DarwinInitializationSettings();
+    InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+
   void registerNotification() {
     firebaseMessaging.requestPermission();
+    //Get FCM
+    // FirebaseMessaging.instance.getToken().then((String? token) {
+    //   if (token != null) {
+    //     // Get new FCM registration token
+    //     String msg = 'Token: $token';
+    //
+    //     // Log and toast
+    //     print('Token: $token');
+    //     Fluttertoast.showToast(
+    //         msg: msg,
+    //         toastLength: Toast.LENGTH_SHORT,
+    //         gravity: ToastGravity.BOTTOM,
+    //         timeInSecForIosWeb: 1,
+    //         backgroundColor: Colors.grey,
+    //         textColor: Colors.white,
+    //         fontSize: 16.0
+    //     );
+    //   } else {
+    //     print('Fetching FCM registration token failed');
+    //   }
+    // }).catchError((e) {
+    //   print('Fetching FCM registration token failed: $e');
+    // });
+
+    //listen channel
+    //test mess
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage: $message');
       if (message.notification != null) {
-        // showNotification(message.notification!);
+        showNotification(message.notification!);
       }
       return;
     });
@@ -52,16 +95,6 @@ class ChatProvider {
       platformChannelSpecifics,
       payload: null,
     );
-  }
-
-  void configLocalNotification() {
-    AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings();
-    InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   Future<void> updateDataFirestore(String collectionPath, String docPath,

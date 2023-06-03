@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +31,7 @@ class FollowingPage extends StatelessWidget {
                 onTap: () {
                   ApplicationState()
                       .setToseeProfile("M0MAz9RQcUTGg6Q8RMy4lqki4TA3");
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
