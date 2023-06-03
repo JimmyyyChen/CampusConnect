@@ -15,7 +15,8 @@ class PostWidget extends StatefulWidget {
     required this.isFollowed,
     required this.isLike,
     required this.isFavorite,
-    this.showVideoThumbnail = true, // if true, show video thumbnail, else show video player which can be played by tapping
+    this.showVideoThumbnail =
+        true, // if true, show video thumbnail, else show video player which can be played by tapping
     this.hasBottomBar = true,
   });
 
@@ -106,6 +107,7 @@ class _PostWidgetState extends State<PostWidget> {
                 ),
               ],
             ),
+            const SizedBox(height: 8.0),
             PostContentViewer(
               fontColor: widget.post.fontColor,
               fontSize: widget.post.fontSize,

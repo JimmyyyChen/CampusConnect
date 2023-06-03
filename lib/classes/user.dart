@@ -1,5 +1,4 @@
 import 'post.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 // see users collection in firestore
 class UserData {

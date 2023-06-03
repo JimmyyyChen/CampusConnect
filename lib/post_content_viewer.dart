@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -79,132 +78,141 @@ class _PostContentViewerState extends State<PostContentViewer> {
       _videoPlayerController!.setLooping(true);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.markdownText.isNotEmpty)
-          MarkdownBody(
-            data: widget.markdownText,
-            styleSheet: MarkdownStyleSheet(
-              // every thin has same color
-              p: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize,
-              ),
-              h1: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 2,
-              ),
-              h2: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 1.5,
-              ),
-              h3: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 1.17,
-              ),
-              h4: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 1.12,
-              ),
-              h5: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 1.07,
-              ),
-              h6: TextStyle(
-                color: widget.fontColor,
-                fontSize: widget.fontSize * 1.05,
-              ),
-              listBullet:
-                  TextStyle(color: widget.fontColor, fontSize: widget.fontSize),
-            ),
-          )
-        else
-          const Center(
-            child: Text(
-              'Markdown文本为空',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        const SizedBox(height: 8),
-        // image viewer for network image
-        widget.imageUrl == null
-            ? Container()
-            : Image.network(widget.imageUrl!,
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.width / 2),
-
-        // image viewer for local image when creating post
-        widget.imageFile == null
-            ? Container()
-            : Image.file(widget.imageFile!,
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.width / 2),
-        // video viewer for local video when creating post
-
-        if (widget.videoUrl != null)
-          if (widget.showVideoThumbnail)
-            const Center(
-              child: Icon(
-                Icons.slow_motion_video_sharp,
-                size: 70,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.markdownText.isNotEmpty)
+            MarkdownBody(
+              data: widget.markdownText,
+              styleSheet: MarkdownStyleSheet(
+                // every thin has same color
+                p: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize,
+                ),
+                h1: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 2,
+                ),
+                h2: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 1.5,
+                ),
+                h3: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 1.17,
+                ),
+                h4: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 1.12,
+                ),
+                h5: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 1.07,
+                ),
+                h6: TextStyle(
+                  color: widget.fontColor,
+                  fontSize: widget.fontSize * 1.05,
+                ),
+                listBullet: TextStyle(
+                    color: widget.fontColor, fontSize: widget.fontSize),
               ),
             )
-
-          // if (widget.showVideoThumbnail && _thumbnailPath != null)
-          // show thumbnail of video
-          // Image.file(
-          //   File(_thumbnailPath!),
-          // )
           else
-            FutureBuilder(
-                future: _initializeVideoPlayerFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // If the VideoPlayerController has finished initialization, use
-                    // the data it provides to limit the aspect ratio of the video.
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (_videoPlayerController!.value.isPlaying) {
-                            _videoPlayerController!.pause();
-                          } else {
-                            _videoPlayerController!.play();
-                          }
-                        });
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: AspectRatio(
-                          aspectRatio:
-                              _videoPlayerController!.value.aspectRatio,
-                          // Use the VideoPlayer widget to display the video.
-                          // child: VideoPlayer(_videoPlayerController!),
+            const Center(
+              child: Text(
+                'Markdown文本为空',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+          const SizedBox(height: 8),
+          // image viewer for network image
+          widget.imageUrl == null
+              ? Container()
+              : Center(
+                  child: Image.network(widget.imageUrl!,
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.width / 2),
+                ),
 
-                          child: Stack(
-                            children: [
-                              VideoPlayer(_videoPlayerController!),
-                              if (!_videoPlayerController!.value.isPlaying)
-                                const Center(
-                                  child: Icon(
-                                    Icons.play_arrow,
-                                    size: 100,
-                                  ),
-                                ),
-                            ],
+          // image viewer for local image when creating post
+          widget.imageFile == null
+              ? Container()
+              : Center(
+                  child: Image.file(widget.imageFile!,
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.width / 2),
+                ),
+          // video viewer for local video when creating post
+
+          if (widget.videoUrl != null)
+            if (widget.showVideoThumbnail)
+              const Center(
+                child: Icon(
+                  Icons.slow_motion_video_sharp,
+                  size: 70,
+                ),
+              )
+
+            // if (widget.showVideoThumbnail && _thumbnailPath != null)
+            // show thumbnail of video
+            // Image.file(
+            //   File(_thumbnailPath!),
+            // )
+            else
+              Center(
+                child: FutureBuilder(
+                    future: _initializeVideoPlayerFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        // If the VideoPlayerController has finished initialization, use
+                        // the data it provides to limit the aspect ratio of the video.
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (_videoPlayerController!.value.isPlaying) {
+                                _videoPlayerController!.pause();
+                              } else {
+                                _videoPlayerController!.play();
+                              }
+                            });
+                          },
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: AspectRatio(
+                              aspectRatio:
+                                  _videoPlayerController!.value.aspectRatio,
+                              // Use the VideoPlayer widget to display the video.
+                              // child: VideoPlayer(_videoPlayerController!),
+
+                              child: Stack(
+                                children: [
+                                  VideoPlayer(_videoPlayerController!),
+                                  if (!_videoPlayerController!.value.isPlaying)
+                                    const Center(
+                                      child: Icon(
+                                        Icons.play_arrow,
+                                        size: 100,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    // If the VideoPlayerController is still initializing, show a
-                    // loading spinner.
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-      ],
+                        );
+                      } else {
+                        // If the VideoPlayerController is still initializing, show a
+                        // loading spinner.
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+              ),
+        ],
+      ),
     );
   }
 }
