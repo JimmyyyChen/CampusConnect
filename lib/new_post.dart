@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:forum/post_content_viewer.dart';
 import 'package:geolocator/geolocator.dart';
@@ -207,12 +208,12 @@ class _NewPostPageState extends State<NewPostPage> {
                   : ListView(
                       children: [
                         PostContentViewer(
+                          showVideoThumbnail: false,
                           markdownText: _postTextController.text,
                           fontSize: _fontSize,
                           fontColor: _fontColor,
                           imageFile: _imageFile,
                           videoFile: _videoFile,
-                          videoPlayerController: _videoPlayerController,
                         )
                       ],
                     ),
@@ -345,7 +346,44 @@ class _NewPostPageState extends State<NewPostPage> {
             ),
             const SizedBox(height: 8),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                String? imageUrl;
+                String? videoUrl;
+                if (_imageFile != null || _videoFile != null) {
+                  // upload image
+                  //Get a reference to storage root
+                  Reference referenceRoot = FirebaseStorage.instance.ref();
+                  Reference referenceDirPosts = referenceRoot.child('posts');
+                  String uniqueFileName =
+                      DateTime.now().millisecondsSinceEpoch.toString();
+                  //Create a reference for the image to be stored
+                  Reference referenceToUpload =
+                      referenceDirPosts.child(uniqueFileName);
+
+                  if (_imageFile != null) {
+                    //Handle errors/success
+                    try {
+                      //Store the file
+                      await referenceToUpload.putFile(File(_imageFile!.path));
+                      //Success: get the download URL
+                      imageUrl = await referenceToUpload.getDownloadURL();
+                    } catch (error) {
+                      //Some error occurred
+                    }
+                  }
+                  if (_videoFile != null) {
+                    //Handle errors/success
+                    try {
+                      //Store the file
+                      await referenceToUpload.putFile(File(_videoFile!.path));
+                      //Success: get the download URL
+                      videoUrl = await referenceToUpload.getDownloadURL();
+                    } catch (error) {
+                      //Some error occurred
+                    }
+                  }
+                }
+
                 FirebaseFirestore.instance.collection('posts').add({
                   'authoruid': FirebaseAuth.instance.currentUser!.uid,
                   'markdownText': _postTextController.text,
@@ -360,9 +398,10 @@ class _NewPostPageState extends State<NewPostPage> {
                   'likeCount': 0,
                   'commentCount': 0,
                   'favoriteCount': 0,
+                  'image': imageUrl,
+                  'video': videoUrl,
+
                   // TODO
-                  // 'image' : _image == null ? null : _image!.path,
-                  // 'video' : _videoFile == null ? null : _videoFile!.path,
                   // comments collection would be added in post_detail_page.dart if there is a comment
                 });
 

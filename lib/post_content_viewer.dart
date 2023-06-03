@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:video_player/video_player.dart';
+// import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PostContentViewer extends StatefulWidget {
   const PostContentViewer({
@@ -10,25 +12,73 @@ class PostContentViewer extends StatefulWidget {
     required this.markdownText,
     required this.fontSize,
     required this.fontColor,
+    required this.showVideoThumbnail,
+    this.imageUrl,
+    this.videoUrl,
     this.imageFile, // TODO
     this.videoFile,
-    this.videoPlayerController,
   });
 
   final String markdownText;
   final double fontSize;
   final Color fontColor;
   final File? imageFile;
+  final String? imageUrl;
+  final String? videoUrl;
   final File? videoFile;
-  final VideoPlayerController? videoPlayerController;
+  final bool showVideoThumbnail;
 
   @override
   State<PostContentViewer> createState() => _PostContentViewerState();
 }
 
 class _PostContentViewerState extends State<PostContentViewer> {
+  VideoPlayerController? _videoPlayerController;
+  Future<void>? _initializeVideoPlayerFuture;
+  // String? _thumbnailPath;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.videoUrl != null) {
+      // _loadThumbnail();
+    }
+  }
+
+  // void _loadThumbnail() async {
+  //   _thumbnailPath = await VideoThumbnail.thumbnailFile(
+  //     video: widget.videoUrl!,
+  //     // thumbnailPath: (await getTemporaryDirectory()).path,
+  //     imageFormat: ImageFormat.WEBP,
+  //     maxHeight:
+  //         64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+  //     quality: 75,
+  //   );
+  //   setState(() {}); // 更新状态以触发UI重建
+  // }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.imageUrl != null || widget.imageFile != null) {
+      _videoPlayerController = null;
+    }
+    if (widget.videoUrl != null && _videoPlayerController == null) {
+      _videoPlayerController = VideoPlayerController.network(widget.videoUrl!);
+      _initializeVideoPlayerFuture = _videoPlayerController!.initialize();
+      _videoPlayerController!.setLooping(true);
+    }
+    if (widget.videoFile != null && _videoPlayerController == null) {
+      _videoPlayerController = VideoPlayerController.file(widget.videoFile!);
+      _initializeVideoPlayerFuture = _videoPlayerController!.initialize();
+      _videoPlayerController!.setLooping(true);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,38 +127,83 @@ class _PostContentViewerState extends State<PostContentViewer> {
             ),
           ),
         const SizedBox(height: 8),
-        // image viewer
+        // image viewer for network image
+        widget.imageUrl == null
+            ? Container()
+            : Image.network(widget.imageUrl!,
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.width / 2),
+
+        // image viewer for local image when creating post
         widget.imageFile == null
             ? Container()
             : Image.file(widget.imageFile!,
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.width / 2),
-        // video viewer
-        widget.videoFile == null
-            ? Container()
-            : Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (widget.videoPlayerController!.value.isPlaying) {
-                          widget.videoPlayerController!.pause();
-                        } else {
-                          widget.videoPlayerController!.play();
-                        }
-                      });
-                    },
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: AspectRatio(
-                        aspectRatio:
-                            widget.videoPlayerController!.value.aspectRatio,
-                        child: VideoPlayer(widget.videoPlayerController!),
-                      ),
-                    ),
-                  ),
-                ],
+        // video viewer for local video when creating post
+
+        if (widget.videoUrl != null)
+          if (widget.showVideoThumbnail)
+            const Center(
+              child: Icon(
+                Icons.slow_motion_video_sharp,
+                size: 70,
               ),
+            )
+
+          // if (widget.showVideoThumbnail && _thumbnailPath != null)
+          // show thumbnail of video
+          // Image.file(
+          //   File(_thumbnailPath!),
+          // )
+          else
+            FutureBuilder(
+                future: _initializeVideoPlayerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // If the VideoPlayerController has finished initialization, use
+                    // the data it provides to limit the aspect ratio of the video.
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_videoPlayerController!.value.isPlaying) {
+                            _videoPlayerController!.pause();
+                          } else {
+                            _videoPlayerController!.play();
+                          }
+                        });
+                      },
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: AspectRatio(
+                          aspectRatio:
+                              _videoPlayerController!.value.aspectRatio,
+                          // Use the VideoPlayer widget to display the video.
+                          // child: VideoPlayer(_videoPlayerController!),
+
+                          child: Stack(
+                            children: [
+                              VideoPlayer(_videoPlayerController!),
+                              if (!_videoPlayerController!.value.isPlaying)
+                                const Center(
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 100,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    // If the VideoPlayerController is still initializing, show a
+                    // loading spinner.
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
       ],
     );
   }

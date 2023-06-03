@@ -15,6 +15,8 @@ class PostWidget extends StatefulWidget {
     required this.isFollowed,
     required this.isLike,
     required this.isFavorite,
+    this.showVideoThumbnail = true, // if true, show video thumbnail, else show video player which can be played by tapping
+    this.hasBottomBar = true,
   });
 
   final Post post;
@@ -22,6 +24,8 @@ class PostWidget extends StatefulWidget {
   final bool isFollowed;
   final bool isLike;
   final bool isFavorite;
+  final bool hasBottomBar;
+  final bool showVideoThumbnail;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -52,11 +56,9 @@ class _PostWidgetState extends State<PostWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // cut author name if too long
+                    // TODO
                     Text(
-                      widget.post.authoruid.length > 10
-                          ? widget.post.authoruid.substring(0, 10) + '...'
-                          : widget.post.authoruid,
+                      widget.post.authorName,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -108,6 +110,9 @@ class _PostWidgetState extends State<PostWidget> {
               fontColor: widget.post.fontColor,
               fontSize: widget.post.fontSize,
               markdownText: widget.post.markdownText,
+              imageUrl: widget.post.imageUrl,
+              videoUrl: widget.post.videoUrl,
+              showVideoThumbnail: widget.showVideoThumbnail,
             ),
             Row(
               children: [
@@ -149,112 +154,116 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
               ],
             ),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () async {
-                    if (widget.isLike) {
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({
-                        'likedPostsId':
-                            FieldValue.arrayRemove([widget.post.postuid])
-                      });
-                      // decrease likeCount to post
-                      FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(widget.post.postuid)
-                          .update({
-                        'likeCount': FieldValue.increment(-1),
-                      });
-                    } else {
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({
-                        'likedPostsId':
-                            FieldValue.arrayUnion([widget.post.postuid])
-                      });
-                      // add likeCount to post
-                      FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(widget.post.postuid)
-                          .update({
-                        'likeCount': FieldValue.increment(1),
-                      });
-                    }
-                  },
-                  child: Row(
+            !widget.hasBottomBar
+                ? const SizedBox()
+                : Row(
                     children: [
-                      Icon(widget.isLike
-                          ? Icons.thumb_up
-                          : Icons.thumb_up_alt_outlined),
-                      Text('Like ${widget.post.likeCount}'),
+                      TextButton(
+                        onPressed: () async {
+                          if (widget.isLike) {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'likedPostsId':
+                                  FieldValue.arrayRemove([widget.post.postuid])
+                            });
+                            // decrease likeCount to post
+                            FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(widget.post.postuid)
+                                .update({
+                              'likeCount': FieldValue.increment(-1),
+                            });
+                          } else {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'likedPostsId':
+                                  FieldValue.arrayUnion([widget.post.postuid])
+                            });
+                            // add likeCount to post
+                            FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(widget.post.postuid)
+                                .update({
+                              'likeCount': FieldValue.increment(1),
+                            });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Icon(widget.isLike
+                                ? Icons.thumb_up
+                                : Icons.thumb_up_alt_outlined),
+                            Text('Like ${widget.post.likeCount}'),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: widget.commentAction,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.comment),
+                            Text('Comment'),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {}, //TODO : 分享界面实现
+                        child: const Row(
+                          children: [
+                            Icon(Icons.share),
+                            Text('Share'),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          if (widget.isFavorite) {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'favoritePostsId':
+                                  FieldValue.arrayRemove([widget.post.postuid])
+                            });
+                            // update favoriteCount to post
+                            FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(widget.post.postuid)
+                                .update({
+                              'favoriteCount': FieldValue.increment(-1),
+                            });
+                          } else {
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .update({
+                              'favoritePostsId':
+                                  FieldValue.arrayUnion([widget.post.postuid])
+                            });
+                            // update favoriteCount to post
+                            FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(widget.post.postuid)
+                                .update({
+                              'favoriteCount': FieldValue.increment(1),
+                            });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Icon(widget.isFavorite
+                                ? Icons.star
+                                : Icons.star_border),
+                            Text('Favorite ${widget.post.favoriteCount}'),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                TextButton(
-                  onPressed: widget.commentAction,
-                  child: const Row(
-                    children: [
-                      Icon(Icons.comment),
-                      Text('Comment'),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {}, //TODO : 分享界面实现
-                  child: const Row(
-                    children: [
-                      Icon(Icons.share),
-                      Text('Share'),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (widget.isFavorite) {
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({
-                        'favoritePostsId':
-                            FieldValue.arrayRemove([widget.post.postuid])
-                      });
-                      // update favoriteCount to post
-                      FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(widget.post.postuid)
-                          .update({
-                        'favoriteCount': FieldValue.increment(-1),
-                      });
-                    } else {
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({
-                        'favoritePostsId':
-                            FieldValue.arrayUnion([widget.post.postuid])
-                      });
-                      // update favoriteCount to post
-                      FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(widget.post.postuid)
-                          .update({
-                        'favoriteCount': FieldValue.increment(1),
-                      });
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Icon(widget.isFavorite ? Icons.star : Icons.star_border),
-                      Text('Favorite ${widget.post.favoriteCount}'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

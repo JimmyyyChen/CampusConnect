@@ -14,8 +14,9 @@ class Post {
     required this.fontSize,
     this.tag,
     this.location,
-    // required this.imageFile,
-    // required this.videoFile,
+    required this.imageUrl,
+    required this.videoUrl,
+    required this.authorName, 
   });
 
   final String postuid;
@@ -29,8 +30,9 @@ class Post {
   final Color fontColor;
   final String? tag;
   final GeoPoint? location;
-  // final String imageFile; // TODO: single image
-  // final String videoFile; // TODO: single video
+  final String? imageUrl; // TODO: single image
+  final String? videoUrl; // TODO: single video
+  final String authorName;
 }
 
 class Comment {

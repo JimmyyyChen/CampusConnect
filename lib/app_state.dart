@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'classes/post.dart';
 import 'classes/user.dart';
-import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -103,12 +100,22 @@ class ApplicationState extends ChangeNotifier {
         _postsSubscription = FirebaseFirestore.instance
             .collection('posts')
             .snapshots()
-            .listen((snapshot) {
+            .listen((snapshot) async {
           _posts = {};
           for (final document in snapshot.docs) {
+            // get author name from users collection by authoruid
+            String authorName = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(document.data()['authoruid'])
+                .get()
+                .then((snapshot) {
+              return snapshot.data()?['name'];
+            });
+
             _posts[document.id] = Post(
               postuid: document.id,
               authoruid: document.data()['authoruid'],
+              authorName: authorName,
               fontColor: Color(document.data()['fontColor']),
               fontSize: document.data()['fontSize'],
               likeCount: document.data()['likeCount'],
@@ -116,11 +123,11 @@ class ApplicationState extends ChangeNotifier {
               markdownText: document.data()['markdownText'],
               postTime: document.data()['postTime'],
               tag: document.data()['tag'],
-              // imageFile: document.data()['pic'],
-              // videoFile: document.data()['videos'],
+              imageUrl: document.data()['image'],
+              videoUrl: document.data()['video'],
               // comments: document.collection(comment)
-              commentCount:document.data()['commentCount'],
-              favoriteCount:document.data()['favoriteCount'],
+              commentCount: document.data()['commentCount'],
+              favoriteCount: document.data()['favoriteCount'],
             );
           }
           notifyListeners();

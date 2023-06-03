@@ -55,6 +55,7 @@ class _FavoritePageState extends State<FavoritePage> {
                       }));
                     },
                     child: PostWidget(
+                      showVideoThumbnail: true,
                       post: appState.posts[postUid]!,
                       isFavorite: appState.favoritePostsId.contains(postUid),
                       isFollowed: appState.follows

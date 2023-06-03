@@ -48,6 +48,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: [
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => PostWidget(
+                      showVideoThumbnail: false, // can play video
                       post: appState.posts[widget.postUid]!,
                       isFavorite:
                           appState.favoritePostsId.contains(widget.postUid),

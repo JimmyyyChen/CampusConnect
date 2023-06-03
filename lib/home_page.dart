@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
             child: Consumer<ApplicationState>(
               builder: (context, appState, _) {
                 // make a copy of appState.posts
-                Map<String, Post> posts = Map.from(appState.posts);
+                Map<String, Post> posts = Map.from(appState.posts); 
                 // sort the posts
 
                 posts = Map.fromEntries(posts.entries.toList()
@@ -156,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                         }));
                       },
                       child: PostWidget(
+                        showVideoThumbnail: true,
                         post: appState.posts[postuid]!,
                         isFavorite: appState.favoritePostsId.contains(postuid),
                         isFollowed: appState.follows
