@@ -15,8 +15,9 @@ class ApplicationState extends ChangeNotifier {
   //初始化消息列表
   List<msg> _messages = [];
   List<msg> get messages => _messages;
-  void addMessage(message) {
+  void addMessage(msg message) {
     _messages.add(message);
+    print("content"+ message.content);
     notifyListeners();
   }
 
