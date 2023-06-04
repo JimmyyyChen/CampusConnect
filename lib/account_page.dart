@@ -38,7 +38,8 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => MessageList()));
+                      builder: (BuildContext context) =>
+                          MessagePage(msgList: ApplicationState().messages)));
                 },
               ),
             ],
@@ -176,8 +177,7 @@ class _AccountPageState extends State<AccountPage> {
       return Scaffold(
           appBar: AppBar(
             title: const Text('Account'),
-            actions: [
-            ],
+            actions: [],
           ),
           body: ListView(
             children: [

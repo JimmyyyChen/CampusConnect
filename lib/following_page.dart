@@ -93,32 +93,3 @@ class FollowingPage extends StatelessWidget {
     );
   }
 }
-
-
-
-// for testing
-// class User {
-//   const User({required this.name, required this.id});
-
-//   final String name;
-//   final String id;
-// }
-
-// const List<User> users = [
-//   User(name: 'Elon Musk', id: 'realElonMusk'),
-//   User(name: 'Bill Gates', id: 'hiBillGates'),
-//   User(name: 'Jeff Bezos', id: 'amaaaaaaazon'),
-//   User(name: 'Mark Zuckerberg', id: 'markZuckerberg'),
-//   User(name: 'Tim Cook', id: 'timApple'),
-//   User(name: 'Sundar Pichai', id: 'sundarPichai'),
-//   User(name: 'Satya Nadella', id: 'satyaNadella'),
-//   User(name: 'Jack Dorsey', id: 'jackDorsey'),
-//   User(name: 'Larry Page', id: 'larryPage'),
-//   User(name: 'Sergey Brin', id: 'sergeyBrin'),
-//   User(name: 'Larry Ellison', id: 'larryEllison'),
-//   User(name: 'Steve Ballmer', id: 'steveBallmer'),
-//   User(name: 'Michael Dell', id: 'michaelDell'),
-//   User(name: 'Steve Jobs', id: 'steveJobs'),
-//   User(name: 'Ginni Rometty', id: 'ginniRometty'),
-//   User(name: 'Marissa Mayer', id: 'marissaMayer'),
-// ];

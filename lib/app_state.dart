@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:forum/classes/msg.dart';
 
 import 'classes/post.dart';
 import 'classes/user.dart';
@@ -12,12 +13,13 @@ class ApplicationState extends ChangeNotifier {
     init();
   }
   //初始化消息列表
-  List<String> _messages = [];
-  List<String> get messages => _messages;
-  void addMessage(String message) {
+  List<msg> _messages = [];
+  List<msg> get messages => _messages;
+  void addMessage(message) {
     _messages.add(message);
     notifyListeners();
   }
+
   //本地默认用户设置；
   UserData localUser = UserData(
     uid: '0000001',
@@ -30,6 +32,7 @@ class ApplicationState extends ChangeNotifier {
     localUser = user;
     notifyListeners();
   }
+
   List<UserData> _followingUsers = [];
   List<UserData> get followingUsers => _followingUsers;
 
@@ -136,8 +139,6 @@ class ApplicationState extends ChangeNotifier {
             .collection('posts')
             .snapshots()
             .listen((snapshot) async {
-
-
           _posts = {};
           for (final document in snapshot.docs) {
             // get author name from users collection by authoruid
