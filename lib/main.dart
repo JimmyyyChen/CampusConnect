@@ -65,7 +65,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         builder: (context, appState, _) => AccountPage(
               loggedIn: appState.loggedIn,
               localUser: appState.localUser,
-              // account_image: appState.,
             )),
   ];
 

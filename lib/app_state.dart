@@ -31,11 +31,6 @@ class ApplicationState extends ChangeNotifier {
     _loggedIn = value;
   }
 
-  String account_image =
-      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80';
-  String account_about = "我的简介";
-  String account_name = "name";
-
   StreamSubscription<QuerySnapshot>? _usersSubscription;
   List<String> _follows = [];
   List<String> get follows => _follows;
@@ -71,9 +66,6 @@ class ApplicationState extends ChangeNotifier {
         profileImage: userData['profile'],
         introduction: userData['introduction'],
       );
-      account_about = userData['introduction'];
-      account_image = userData['profile'];
-      account_name = userData['name'];
       notifyListeners();
     });
 
@@ -139,7 +131,7 @@ class ApplicationState extends ChangeNotifier {
             .snapshots()
             .listen((snapshot) async {
           //TODO: 完成通知
-          var LikeNum = _posts
+          var LikeNum = _posts;
 
           _posts = {};
           for (final document in snapshot.docs) {
