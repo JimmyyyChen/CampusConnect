@@ -63,17 +63,43 @@ class ChatProvider {
       print('onMessage: $message');
       print(message.notification?.title);
       print(message.notification?.body);
-      print("under is body");
       if (message.notification != null) {
+        // Save the new message to the Firestore
+        print("save message set");
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && message.notification != null) {
+          final messageData = {
+            'uid': user.uid,
+            'title': message.notification!.title!,
+          };
+
+          FirebaseFirestore.instance.runTransaction((transaction) async {
+            final docRef = FirebaseFirestore.instance.collection('messages').where('uid', isEqualTo: user.uid);
+            final docSnapshot = await docRef.get();
+
+            if (!docSnapshot.docs.isEmpty) {
+              final document = docSnapshot.docs.first;
+              final details = List.from(document.data()!['details'] ?? []);
+              details.add(messageData['title']);
+              transaction.update(document.reference, {'details': details});
+            } else {
+              transaction.set(FirebaseFirestore.instance.collection('messages').doc(), {
+                'uid': user.uid,
+                'details': [messageData['title']],
+              });
+            }
+          });
+        }
+
+
+
+
+
+
         showNotification(message.notification!);
       }
-
-      ApplicationState().addMessage(msg(
-          title: message.notification!.title.toString(),
-          content: message.notification!.body.toString(),
-          ));
-      return;
     });
+
 
     firebaseMessaging.getToken().then((token) {
       print('push token: $token');
