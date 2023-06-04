@@ -169,11 +169,8 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                     onPressed: () async {
                       _userName = displayNameController.text;
                       _about = aboutController.text;
-                      print(_userName);
-                      print(_about);
                       final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
-                      print(uid);
                       String? token =
                           await FirebaseMessaging.instance.getToken();
                       firebase_storage.Reference storageRef = firebase_storage
@@ -181,7 +178,6 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                           .ref()
                           .child('profiles')
                           .child(uid!);
-                      print(storageRef);
                       await storageRef.putFile(File(_imageUrl));
                       UploadTask uploadTask =
                           storageRef.putFile(File(_imageUrl));
@@ -202,7 +198,6 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         'blocks': [],
                         'fcmToken': token,
                       });
-                      print("sahngchuan");
                       Navigator.pop(context);
                     },
                     child: const Text(

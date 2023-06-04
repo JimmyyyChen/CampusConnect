@@ -181,10 +181,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           .child(uid!);
                       print(storageRef);
                       // await storageRef.putFile(File(_imageUrl));
-                      UploadTask uploadTask =
-                          storageRef.putFile(File(_imageUrl));
-                      TaskSnapshot snap = await uploadTask;
-                      String downloadurl = await snap.ref.getDownloadURL();
+                      // UploadTask uploadTask =
+                      //     storageRef.putFile(File(_imageUrl));
+                      // TaskSnapshot snap = await uploadTask;
+                      // String downloadurl = await snap.ref.getDownloadURL();
 
                       // String downloadurl = _imageUrl;
                       FirebaseFirestore.instance // TODO: change Uses model
@@ -192,7 +192,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           .doc(uid)
                           .update({
                         'name': _userName, //,yes I know.
-                        'profile': downloadurl,
+                        // 'profile': downloadurl,
                         'uid': uid,
                         'introduction': _about
                       });
