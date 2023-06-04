@@ -84,14 +84,13 @@ class ApplicationState extends ChangeNotifier {
           _followingUsers = [];
           for (final document in snapshot.docs) {
             try {
-              if (!_userMap.containsKey(document.data()['uid'])) {
-                _userMap[document.data()['uid']] = UserData(
-                  uid: document.data()['uid'],
-                  name: document.data()['name'],
-                  profileImage: document.data()['profile'],
-                  introduction: document.data()['introduction'],
-                );
-              }
+              _userMap[document.data()['uid']] = UserData(
+                uid: document.data()['uid'],
+                name: document.data()['name'],
+                profileImage: document.data()['profile'],
+                introduction: document.data()['introduction'],
+              );
+
               print("userMap: $_userMap");
 
               if (document.data()['uid'] == user.uid) {
