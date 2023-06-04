@@ -87,6 +87,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           DocumentSnapshot comment = snapshot.data!.docs[index];
+                          // get user name by comment['authorUid'],
                           return CommentWidget(
                             name: comment['authorUid'],
                             content: comment['content'],
@@ -112,35 +113,49 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         decoration: const InputDecoration(
                           hintText: "Write a comment...",
                         ),
-                        onSubmitted: (String value) {
-                          FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(widget.postUid)
-                              .collection('comments')
-                              .add({
-                            'authorUid': FirebaseAuth.instance.currentUser!.uid,
-                            'content': value,
-                            'commentTime': Timestamp.now(),
-                          });
-                          // add commentCount
-                          FirebaseFirestore.instance
-                              .collection('posts')
-                              .doc(widget.postUid)
-                              .update({
-                            'commentCount': FieldValue.increment(1),
-                          });
-                          commentController.clear();
-                        }),
+                        // onSubmitted: (String value) {
+                        //   FirebaseFirestore.instance
+                        //       .collection('posts')
+                        //       .doc(widget.postUid)
+                        //       .collection('comments')
+                        //       .add({
+                        //     'authorUid': FirebaseAuth.instance.currentUser!.uid,
+                        //     'content': value,
+                        //     'commentTime': Timestamp.now(),
+                        //   });
+                        //   // add commentCount
+                        //   FirebaseFirestore.instance
+                        //       .collection('posts')
+                        //       .doc(widget.postUid)
+                        //       .update({
+                        //     'commentCount': FieldValue.increment(1),
+                        //   });
+                        //   commentController.clear();
+                        // }
+                        ),
                   ),
                 ),
                 IconButton(
                   onPressed: () async{
+                    // get current user name
+                    String userName = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .get()
+                        .then((DocumentSnapshot documentSnapshot) {
+                      if (documentSnapshot.exists) {
+                        return documentSnapshot['name'];
+                      } else {
+                        return "unknown";
+                      }
+                    });
                     FirebaseFirestore.instance
                         .collection('posts')
                         .doc(widget.postUid)
                         .collection('comments')
                         .add({
-                      'authorUid': FirebaseAuth.instance.currentUser!.uid,
+                      'authorUid': userName,
+                      // 'authorUid': FirebaseAuth.instance.currentUser!.uid,
                       'content': commentController.text,
                       'commentTime': Timestamp.now(),
                     });
