@@ -70,7 +70,8 @@ class _Chat_ScreenState extends State<Chat_Screen> {
     //发送通知
     try {
       // BFTlg14_25pHXUUSVSQWq4GIQXskgU-bMrAKIWl_FoPMAda7yMvrRWuMmXYGmKsjAUB2wiLrH93znSZqdqo6ZOU
-      var serverKey = 'AAAAwp4ZTao:APA91bFtJ2NPY2GUMWfWX81rp-JuwmTaFmrI4_vHAQX0pmGNyNhIOhDReedW4dqmoLQtf07F5HspHf7q9HH7xsq8-DiIKD0SEH6NSWf5amWf2jrLy2XPXtDBUMW1wwXCvut6ybcyEbs-';
+      var serverKey =
+          'AAAAwp4ZTao:APA91bFtJ2NPY2GUMWfWX81rp-JuwmTaFmrI4_vHAQX0pmGNyNhIOhDReedW4dqmoLQtf07F5HspHf7q9HH7xsq8-DiIKD0SEH6NSWf5amWf2jrLy2XPXtDBUMW1wwXCvut6ybcyEbs-';
       var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
 
       var headers = {
@@ -83,11 +84,12 @@ class _Chat_ScreenState extends State<Chat_Screen> {
           .where('uid', isEqualTo: peerId)
           .get();
 
-      var fcmToken = "eAdnWZ94Tr-ksrYsG7eM8i:APA91bEKvcM-J-5d5z6JRPdDwNu5VJQIDq8bDuC2X4crvtay7y0Jg0FestUUpoNr0lHQLysgh2f1sitx9droA3dT6L0U2JhNlCFdtrgSZyBA24dSaRAlrfunMG2j6-wV3TJK8MWo-txe";
+      var fcmToken =
+          "eAdnWZ94Tr-ksrYsG7eM8i:APA91bEKvcM-J-5d5z6JRPdDwNu5VJQIDq8bDuC2X4crvtay7y0Jg0FestUUpoNr0lHQLysgh2f1sitx9droA3dT6L0U2JhNlCFdtrgSZyBA24dSaRAlrfunMG2j6-wV3TJK8MWo-txe";
 
       if (querySnapshot.docs.isNotEmpty) {
         var userData = querySnapshot.docs[0].data();
-        var fcmToken = userData['fcmToken'];
+        fcmToken = userData['fcmToken'];
       }
 
       var message = {
@@ -98,7 +100,8 @@ class _Chat_ScreenState extends State<Chat_Screen> {
         'to': fcmToken,
       };
 
-      var response = await http.post(url, headers: headers, body: jsonEncode(message));
+      var response =
+          await http.post(url, headers: headers, body: jsonEncode(message));
 
       if (response.statusCode == 200) {
         print('Notification sent successfully.');
@@ -108,9 +111,8 @@ class _Chat_ScreenState extends State<Chat_Screen> {
     } catch (e) {
       print('Error sending notification: $e');
     }
-    
-    _messageController.text = "";
 
+    _messageController.text = "";
   }
 
   @override
@@ -218,13 +220,13 @@ class _Chat_ScreenState extends State<Chat_Screen> {
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   MessageChat chat =
-                  MessageChat.fromDocument(snapshot.data!.docs[index]);
+                      MessageChat.fromDocument(snapshot.data!.docs[index]);
                   final String message = chat.content;
                   // Encryption().decrypted(chat.content, "1234567891234567");
                   return ChatBubble(
                       text: chat.content,
                       isCurrentUser:
-                      chat.idFrom == currentUserId ? true : false);
+                          chat.idFrom == currentUserId ? true : false);
                 },
               );
             }),
