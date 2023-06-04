@@ -69,7 +69,8 @@ class _Chat_ScreenState extends State<Chat_Screen> {
 
     //发送通知
     try {
-      var serverKey = 'MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCsJPsj1KCy8JkaI+rviTRR80SkELA/ILsAX0PKKeHTfRxq9JdZ0o8TATOtjpUKg7wx+NjX20xZKAwhEivfQrBLT7j5AKZttEcuUIj4oLkdbey/lbTVBq3DAIVH+QKjG7SfXhtSeJpcwMP5PnoekevrSQ+GA2T+2LW19UrHvsLf5gSYVhyoxlVxh12LtkPUijjN47V/66kirJZ8s5NrlDKq3NGcff2npYrXaxbFXXjjdaBn/nxneX5zXAnqSROW2mIhz9gHXAudcgUT1lm5b0yo8qt+YKjVY6i0KkCBxa40S3cAOX+YzPY1stB1BiqHkWlDtdrxyU4neM6ufFCigmWJAgMBAAECggEASdira5mBPoH8C7ywwgUnzqf/ICqQkOQnlGdJm2YQHDulfzRh4QR0oAB5/NAXm6UbjIxl6WOIAw8s9NrouyPOoOAYR6lBu/oENxgRSicYgklvsFg2dNQiom6Mvm1R9kqiV2N1cRGPlo6TA08L8CVFAXAcGq9GGhU5Dk+lvr5UttsvVwLnDJxtVxxNEcZipnPuLJa/EitYTLfllMwb9fp/PWHO9S92G8eZm2NKMhQHgwpA2GRQGia8uOwHBXzL/FCh/UOJRJsiZ/LBX8e7WyBOcs+R0Dc8IG5vi27+z08CvgnX+qwHUpgMQiUcSQovMvEpXhOM/JdBU0GD9bqkOCLnaQKBgQDfJ8a/5oxwnKhTVnrE3yfvpCHAHCthS8k1C5O0jCshH8OzhIyPrOyoDqEG5xdg/6hpBIDgyAsMEzl8VRPBKQQZhDP9qSCtEqdh0e29hUfL3EFcs0Qa+hvvN1WKVr71ek82BGIepKlqYqICeODwaQ5zeg1/XBBKJMphTZ+6D+/oxwKBgQDFeyzWU0k6fBfXEbTj7x0mIzYYyNuhT/BO4MOj68pFUed86X/xCWdEaFUqbS2MQITTkK5kZq0yJXylbRuqrBQb8ZGFrtnRpcnqWbzNDruMf9ubifWPXwR82COHbzZFgrU6g5Jyr6H2j4r7a+MnPeMF927j/Prn58Z0mNarfZUPLwKBgQCG5oLNi0+m2+0dxA+fZ8+6nJwSiHTo8mmF+aOm531DHvKtWRmn2T+PMJjDlXualbJ3GdPXDtcuy4ha0wuIH4Vs73CGjXFFbxtklQWFJkcKw/F3Wp93N28fo3HAmUQDHZc47llqcNxBhbKuj+hbLQchY805CqyGRctaGxTN48iCDQKBgEuODt+JSfEYXT6pxZ2XdH2M5zugTXdwUC69i9yBcAgJiBmgdJTR1jK0ADGVR+HrJWaUakR7jDQtZ30bO4SXBbKTP+v3s9qkJZaF8tg5lMPyfyEJLWxHHD5vq1g70nXRxmi2wiciz0K4NKJw6p2u7dbwjfqoZY6ofKNLfoZqK8d9AoGAGHwGBozFX/+gQVQ0DyXvQhd5PBra+Xb5hnrUe4vhw8F6peCZtHsvF/Mc5X/5jmpRG0B7E7Rf3iaBsAT4wX8Tp+fObKHeB3Jqwe35YrvYxnWnN+RD6HQMkK27kECBEvjse3egGwS2TrDqemhdb3+IU7SXN35VHwcAwLRsnXrMjIw='; // 替换为您的Firebase服务器密钥
+      // BFTlg14_25pHXUUSVSQWq4GIQXskgU-bMrAKIWl_FoPMAda7yMvrRWuMmXYGmKsjAUB2wiLrH93znSZqdqo6ZOU
+      var serverKey = 'AAAAwp4ZTao:APA91bFtJ2NPY2GUMWfWX81rp-JuwmTaFmrI4_vHAQX0pmGNyNhIOhDReedW4dqmoLQtf07F5HspHf7q9HH7xsq8-DiIKD0SEH6NSWf5amWf2jrLy2XPXtDBUMW1wwXCvut6ybcyEbs-';
       var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
 
       var headers = {
@@ -97,7 +98,7 @@ class _Chat_ScreenState extends State<Chat_Screen> {
         'to': fcmToken,
       };
 
-      var response = await http.post(url, headers: headers, body: jsonEncode(encmess));
+      var response = await http.post(url, headers: headers, body: jsonEncode(message));
 
       if (response.statusCode == 200) {
         print('Notification sent successfully.');
