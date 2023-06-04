@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/profile_page.dart';
 
 import 'classes/post.dart';
 import 'post_content_viewer.dart';
@@ -49,12 +50,29 @@ class _PostWidgetState extends State<PostWidget> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  // backgroundImage: NetworkImage(widget.post.userImage),
-                  // random color
-                  // backgroundColor:
-                  //     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
-                  backgroundImage: NetworkImage(widget.profileImage),
+                // CircleAvatar(
+                //   // backgroundImage: NetworkImage(widget.post.userImage),
+                //   // random color
+                //   // backgroundColor:
+                //   //     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                //   backgroundImage: NetworkImage(widget.profileImage),
+                // ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(uid: widget.post.authoruid),
+                        ));
+                  },
+                  child: CircleAvatar(
+                    radius: 17.0,
+                    backgroundImage:
+                        //todo
+                        NetworkImage(widget.profileImage),
+                    child: Container(),
+                  ),
                 ),
                 const SizedBox(width: 8.0),
                 Column(
