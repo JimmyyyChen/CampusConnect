@@ -58,7 +58,6 @@ class ApplicationState extends ChangeNotifier {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .snapshots()
         .listen((DocumentSnapshot snapshot) {
-      print("更新了");
       if (snapshot.data() == null) return;
       Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
       localUser = UserData(
@@ -67,7 +66,6 @@ class ApplicationState extends ChangeNotifier {
         profileImage: userData['profile'],
         introduction: userData['introduction'],
       );
-      print(localUser.introduction);
       notifyListeners();
     });
 
@@ -88,6 +86,8 @@ class ApplicationState extends ChangeNotifier {
               for (final following in document.data()['follows']) {
                 _follows.add(following);
               }
+
+              print("follows: $_follows");
               for (final favoritePostId in document.data()['favoritePostsId']) {
                 _favoritePostsId.add(favoritePostId);
               }
@@ -150,8 +150,6 @@ class ApplicationState extends ChangeNotifier {
               profileImage: document.data()['profile'],
               introduction: document.data()['introduction'],
             );
-            print("更新啦");
-            print(localUser.introduction);
           }
           notifyListeners();
         });
@@ -183,8 +181,6 @@ class ApplicationState extends ChangeNotifier {
           profileImage: userData['profile'],
           introduction: userData['introduction'],
         );
-        print("这是新的");
-        print(toseeUser.profileImage);
       }
     }).catchError((error) {
       print('Error getting user data: $error');

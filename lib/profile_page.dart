@@ -22,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = "";
   bool followed = false;
   bool blocked = false;
+  List<String> _follows = [];
 
   void blockUser() {
     FirebaseFirestore.instance
@@ -144,11 +145,24 @@ class _ProfilePageState extends State<ProfilePage> {
       profileImage: userData['profile'],
       introduction: userData['introduction'],
     );
+    DocumentSnapshot documentSnapshot2 = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get();
+
+    // 处理数据
+    Map<String, dynamic> userData2 =
+        documentSnapshot2.data() as Map<String, dynamic>;
+    if (userData2['follows'] != null) {
+      List<dynamic> followsDynamic2 = userData2['follows'];
+      _follows = List<String>.from(followsDynamic2);
+    }
+
+    print("follows: $_follows");
     // 数据获取完成后触发UI更新
     setState(() {
       _userData = _userData;
-      followed = ApplicationState().follows.contains(widget.uid);
-      print("follows: ${ApplicationState().follows}");
+      followed = _follows.contains(widget.uid);
       print("uid: ${widget.uid}");
       print("followed: $followed");
     });
@@ -240,6 +254,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 itemCount: appState.posts.length,
                 itemBuilder: (context, index) {
                   String postuid = appState.posts.keys.elementAt(index);
+                  if (appState.posts[postuid]!.authoruid != widget.uid) {
+                    return Container();
+                  }
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {

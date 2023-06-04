@@ -36,8 +36,7 @@ class FollowingPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         //todo
-                        builder: (context) =>
-                            ProfilePage(uid: "M0MAz9RQcUTGg6Q8RMy4lqki4TA3"),
+                        builder: (context) => ProfilePage(uid: follows[index]),
                       ));
                 },
                 child: CircleAvatar(
