@@ -59,8 +59,11 @@ dependencies:
   video_thumbnail: ^0.5.3
   firebase_analytics:
   share:
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
+  flutter_launcher_icons: 
+
   flutter_test:
     sdk: flutter
 
@@ -112,3 +115,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "assets/icon/icon.png"
