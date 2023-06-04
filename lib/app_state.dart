@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
@@ -81,38 +83,45 @@ class ApplicationState extends ChangeNotifier {
           _likedPostsId = [];
           _followingUsers = [];
           for (final document in snapshot.docs) {
-            if (!_userMap.containsKey(document.data()['uid'])) {
-              _userMap[document.data()['uid']] = UserData(
-                uid: document.data()['uid'],
-                name: document.data()['name'],
-                profileImage: document.data()['profile'],
-                introduction: document.data()['introduction'],
-              );
-            }
-            print("userMap: $_userMap");
+            try {
+              if (!_userMap.containsKey(document.data()['uid'])) {
+                _userMap[document.data()['uid']] = UserData(
+                  uid: document.data()['uid'],
+                  name: document.data()['name'],
+                  profileImage: document.data()['profile'],
+                  introduction: document.data()['introduction'],
+                );
+              }
+              print("userMap: $_userMap");
 
-            if (document.data()['uid'] == user.uid) {
-              for (final following in document.data()['follows']) {
-                _follows.add(following);
-                if (_userMap.containsKey(following)) {
-                  _followingUsers.add(_userMap[following]!);
+              if (document.data()['uid'] == user.uid) {
+                for (final following in document.data()['follows']) {
+                  _follows.add(following);
+                  if (_userMap[following] != null) {
+                    _followingUsers.add(_userMap[following]!);
+                  }
+                  // _followingUsers.add(_userMap[following]!);
+                  print("followingUsers: $_followingUsers");
                 }
-                // _followingUsers.add(_userMap[following]!);
-                print("followingUsers: $_followingUsers");
-              }
 
-              for (final blocking in document.data()['blocks']) {
-                _blocks.add(blocking);
+                for (final blocking in document.data()['blocks']) {
+                  _blocks.add(blocking);
+                }
+                print("follows: $_follows");
+                print("blocks: $_blocks");
+                for (final favoritePostId
+                    in document.data()['favoritePostsId']) {
+                  _favoritePostsId.add(favoritePostId);
+                }
+                for (final likedPostId in document.data()['likedPostsId']) {
+                  _likedPostsId.add(likedPostId);
+                }
+                break;
               }
-              print("follows: $_follows");
-              print("blocks: $_blocks");
-              for (final favoritePostId in document.data()['favoritePostsId']) {
-                _favoritePostsId.add(favoritePostId);
-              }
-              for (final likedPostId in document.data()['likedPostsId']) {
-                _likedPostsId.add(likedPostId);
-              }
-              break;
+            } catch (e) {
+              print(
+                  "Error when getting user data, see app_state.dart. Error message: $e");
+              // exit(0);
             }
           }
           notifyListeners();
@@ -183,25 +192,4 @@ class ApplicationState extends ChangeNotifier {
       notifyListeners();
     });
   }
-
-  // void setToseeProfile(String s) {
-  //   FirebaseFirestore.instance
-  //       .collection("users")
-  //       .doc(s)
-  //       .get()
-  //       .then((DocumentSnapshot documentSnapshot) {
-  //     if (documentSnapshot.exists) {
-  //       Map<String, dynamic> userData =
-  //           documentSnapshot.data() as Map<String, dynamic>;
-  //       toseeUser = UserData(
-  //         uid: userData['uid'],
-  //         name: userData['name'],
-  //         profileImage: userData['profile'],
-  //         introduction: userData['introduction'],
-  //       );
-  //     }
-  //   }).catchError((error) {
-  //     print('Error getting user data: $error');
-  //   });
-  // }
 }
