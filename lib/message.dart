@@ -19,7 +19,7 @@ class DetailsScreen extends StatelessWidget {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text('User Details'),
+          title: Text('消息记录'),
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('messages').where('uid', isEqualTo: user.uid).snapshots(),
