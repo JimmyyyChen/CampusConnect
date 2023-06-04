@@ -4,6 +4,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/app_state.dart';
+import 'package:forum/classes/msg.dart';
 
 import '../constants/Firebase_constant.dart';
 
@@ -65,6 +67,11 @@ class ChatProvider {
       if (message.notification != null) {
         showNotification(message.notification!);
       }
+
+      ApplicationState().addMessage(msg(
+          title: message.notification!.title.toString(),
+          content: message.notification!.body.toString(),
+          ));
       return;
     });
 
