@@ -97,7 +97,9 @@ class ApplicationState extends ChangeNotifier {
               if (document.data()['uid'] == user.uid) {
                 for (final following in document.data()['follows']) {
                   _follows.add(following);
-                  _followingUsers.add(_userMap[following]!);
+                  if(_userMap[following] != null) {
+                    _followingUsers.add(_userMap[following]!);
+                  }
                   print("followingUsers: $_followingUsers");
                 }
 
@@ -118,6 +120,7 @@ class ApplicationState extends ChangeNotifier {
             } catch (e) {
               print(
                   "Error when getting user data, see app_state.dart. Error message: $e");
+              // exit(0);
             }
           }
           notifyListeners();
