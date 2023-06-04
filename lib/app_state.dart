@@ -104,6 +104,9 @@ class ApplicationState extends ChangeNotifier {
             .collection('posts')
             .snapshots()
             .listen((snapshot) async {
+          //TODO: 完成通知
+          var LikeNum = _posts
+
           _posts = {};
           for (final document in snapshot.docs) {
             // get author name from users collection by authoruid

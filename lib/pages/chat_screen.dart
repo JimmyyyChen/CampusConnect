@@ -87,7 +87,7 @@ class _Chat_ScreenState extends State<Chat_Screen> {
 
       if (querySnapshot.docs.isNotEmpty) {
         var userData = querySnapshot.docs[0].data();
-        var fcmToken = userData['fcmToken'];
+        fcmToken = userData['fcmToken'];
       }
 
       var message = {
