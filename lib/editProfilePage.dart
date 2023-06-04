@@ -24,8 +24,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String? _about = ApplicationState().localUser.introduction;
   late File _image;
 
-  String _profile = ApplicationState().localUser.profileImage;
-  String _introduction = ApplicationState().localUser.introduction;
+  // String _profile = ApplicationState().localUser.profileImage;
+  // String _introduction = ApplicationState().localUser.introduction;
   Future<void> _getImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);

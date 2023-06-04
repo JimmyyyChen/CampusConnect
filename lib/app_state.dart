@@ -89,8 +89,6 @@ class ApplicationState extends ChangeNotifier {
                 introduction: document.data()['introduction'],
               );
 
-              // print("userMap: $_userMap");
-
               if (document.data()['uid'] == user.uid) {
                 for (final following in document.data()['follows']) {
                   _follows.add(following);

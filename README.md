@@ -1,4 +1,6 @@
-# forum
+# CampusConnect
+前端flutter 数据库 firebase
+firebase地址：https://console.firebase.google.com/project/android-forum-project/overview?hl=zh-cn
 
 ## Usage
 
