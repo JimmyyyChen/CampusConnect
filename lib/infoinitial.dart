@@ -174,14 +174,15 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                       final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
                       print(uid);
-                      String? token = await FirebaseMessaging.instance.getToken();
+                      String? token =
+                          await FirebaseMessaging.instance.getToken();
                       firebase_storage.Reference storageRef = firebase_storage
                           .FirebaseStorage.instance
                           .ref()
                           .child('profiles')
                           .child(uid!);
                       print(storageRef);
-                      // await storageRef.putFile(File(_imageUrl));
+                      await storageRef.putFile(File(_imageUrl));
                       UploadTask uploadTask =
                           storageRef.putFile(File(_imageUrl));
                       TaskSnapshot snap = await uploadTask;
@@ -192,13 +193,14 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                           .set({
                         'name': _userName, //,yes I know.
                         'profile': downloadurl,
+                        // 'profile': _imageUrl,
                         'uid': uid,
                         'introduction': _about,
                         'favoritePostsId': [],
                         'follows': [],
                         'likedPostsId': [],
                         'blocks': [],
-                        'fcmToken':token,
+                        'fcmToken': token,
                       });
                       print("sahngchuan");
                       Navigator.pop(context);

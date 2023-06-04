@@ -140,6 +140,9 @@ class _SearchPageState extends State<SearchPage> {
                               showVideoThumbnail: true,
                               hasBottomBar: false,
                               post: appState.posts[postuid]!,
+                              profileImage: appState
+                                  .userMap[appState.posts[postuid]!.authoruid]!
+                                  .profileImage,
                               isFavorite:
                                   appState.favoritePostsId.contains(postuid),
                               isFollowed: appState.follows

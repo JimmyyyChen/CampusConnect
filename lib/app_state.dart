@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
@@ -20,13 +22,8 @@ class ApplicationState extends ChangeNotifier {
     introduction: "我的简介",
   );
 
-  UserData toseeUser = UserData(
-    uid: '0000001',
-    name: "name",
-    profileImage:
-        'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
-    introduction: "我的简介",
-  );
+  List<UserData> _followingUsers = [];
+  List<UserData> get followingUsers => _followingUsers;
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
@@ -39,7 +36,7 @@ class ApplicationState extends ChangeNotifier {
   List<String> get follows => _follows;
 
   List<String> _blocks = [];
-  List<String> get blocks => _follows;
+  List<String> get blocks => _blocks;
 
   List<String> _favoritePostsId = [];
   List<String> get favoritePostsId => _favoritePostsId;
@@ -50,6 +47,9 @@ class ApplicationState extends ChangeNotifier {
   StreamSubscription<QuerySnapshot>? _postsSubscription;
   Map<String, Post> _posts = {};
   Map<String, Post> get posts => _posts;
+
+  Map<String, UserData> _userMap = {};
+  Map<String, UserData> get userMap => _userMap;
 
   Future<void> init() async {
     // TODO: BUG
@@ -81,20 +81,47 @@ class ApplicationState extends ChangeNotifier {
           _follows = [];
           _favoritePostsId = [];
           _likedPostsId = [];
+          _followingUsers = [];
           for (final document in snapshot.docs) {
-            if (document.data()['uid'] == user.uid) {
-              for (final following in document.data()['follows']) {
-                _follows.add(following);
+            try {
+              if (!_userMap.containsKey(document.data()['uid'])) {
+                _userMap[document.data()['uid']] = UserData(
+                  uid: document.data()['uid'],
+                  name: document.data()['name'],
+                  profileImage: document.data()['profile'],
+                  introduction: document.data()['introduction'],
+                );
               }
+              print("userMap: $_userMap");
 
-              print("follows: $_follows");
-              for (final favoritePostId in document.data()['favoritePostsId']) {
-                _favoritePostsId.add(favoritePostId);
+              if (document.data()['uid'] == user.uid) {
+                for (final following in document.data()['follows']) {
+                  _follows.add(following);
+                  if (_userMap[following] != null) {
+                    _followingUsers.add(_userMap[following]!);
+                  }
+                  // _followingUsers.add(_userMap[following]!);
+                  print("followingUsers: $_followingUsers");
+                }
+
+                for (final blocking in document.data()['blocks']) {
+                  _blocks.add(blocking);
+                }
+                print("follows: $_follows");
+                print("blocks: $_blocks");
+                for (final favoritePostId
+                    in document.data()['favoritePostsId']) {
+                  _favoritePostsId.add(favoritePostId);
+                }
+                for (final likedPostId in document.data()['likedPostsId']) {
+                  _likedPostsId.add(likedPostId);
+                }
+                break;
               }
-              for (final likedPostId in document.data()['likedPostsId']) {
-                _likedPostsId.add(likedPostId);
-              }
-              break;
+            } catch (e) {
+              print(
+                  "Error when getting user data, see app_state.dart. Error message: $e");
+              // exit(0);
             }
           }
           notifyListeners();
@@ -166,27 +193,6 @@ class ApplicationState extends ChangeNotifier {
         _postsSubscription?.cancel();
       }
       notifyListeners();
-    });
-  }
-
-  void setToseeProfile(String s) {
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(s)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> userData =
-            documentSnapshot.data() as Map<String, dynamic>;
-        toseeUser = UserData(
-          uid: userData['uid'],
-          name: userData['name'],
-          profileImage: userData['profile'],
-          introduction: userData['introduction'],
-        );
-      }
-    }).catchError((error) {
-      print('Error getting user data: $error');
     });
   }
 }
