@@ -46,57 +46,63 @@ class _SearchPageState extends State<SearchPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  List<UserData> futureFoundedUsers = await FirebaseFirestore
-                      .instance
-                      .collection('users')
-                      .get()
-                      .then((QuerySnapshot querySnapshot) {
-                    List<UserData> foundedUsers = [];
-                    querySnapshot.docs.forEach((doc) {
-                      if (doc['name'].contains(_controller.text)) {
+                  List<String> keywords = _controller.text.split(' ');
+
+                  Set<UserData> futureFoundedUsersSet = {};
+                  Set<String> futureFoundedPostsUidSet = {};
+
+                  for (String keyword in keywords) {
+                    List<UserData> futureFoundedUsers = await FirebaseFirestore
+                        .instance
+                        .collection('users')
+                        .where('name', arrayContains: keyword)
+                        .get()
+                        .then((QuerySnapshot querySnapshot) {
+                      List<UserData> foundedUsers = [];
+                      querySnapshot.docs.forEach((doc) {
                         foundedUsers.add(UserData(
-                          // TODO: this user data is not complete
                           uid: doc.id,
                           name: doc['name'],
                         ));
-                      }
+                      });
+                      return foundedUsers;
                     });
-                    return foundedUsers;
-                  });
 
-                  List<String> futureFoundedPostsUid = [];
+                    futureFoundedUsersSet.addAll(futureFoundedUsers);
 
-                  // iterate through all documents in posts collection
-                  await FirebaseFirestore.instance
-                      .collection('posts')
-                      .get()
-                      .then((QuerySnapshot querySnapshot) {
-                    querySnapshot.docs.forEach((doc) {
-                      // if markdownText contains the keyword
-                      if (doc['markdownText'].contains(_controller.text)) {
-                        futureFoundedPostsUid.add(doc.id);
-                      }
-                      // if tag contains the keyword, tag is a String or null
-                      if (doc['tag'] != null &&
-                          doc['tag'].contains(_controller.text)) {
-                        futureFoundedPostsUid.add(doc.id);
-                      }
-                      // if author is in the founded users
-                      if (futureFoundedUsers
-                          .map((e) => e.uid)
-                          .contains(doc['authoruid'])) {
-                        futureFoundedPostsUid.add(doc.id);
-                      }
+                    // iterate through all documents in posts collection
+                    await FirebaseFirestore.instance
+                        .collection('posts')
+                        .get()
+                        .then((QuerySnapshot querySnapshot) {
+                      querySnapshot.docs.forEach((doc) {
+                        // if markdownText contains the keyword
+                        if (doc['markdownText'].contains(keyword)) {
+                          futureFoundedPostsUidSet.add(doc.id);
+                        }
+                        // if tag contains the keyword, tag is a String or null
+                        if (doc['tag'] != null &&
+                            doc['tag'].contains(keyword)) {
+                          futureFoundedPostsUidSet.add(doc.id);
+                        }
+                        // if author is in the founded users
+                        if (futureFoundedUsersSet
+                            .map((e) => e.uid)
+                            .contains(doc['authoruid'])) {
+                          futureFoundedPostsUidSet.add(doc.id);
+                        }
+                      });
                     });
-                  });
+                  }
 
                   setState(() {
-                    _foundedUsers = futureFoundedUsers;
-                    _foundedPostsUid = futureFoundedPostsUid;
+                    _foundedUsers = futureFoundedUsersSet.toList();
+                    _foundedPostsUid = futureFoundedPostsUidSet.toList();
                   });
                 },
                 child: const Text('Search'),
               ),
+
               Expanded(
                 child: ListView(children: [
                   const ListTile(
