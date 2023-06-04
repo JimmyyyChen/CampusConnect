@@ -42,7 +42,9 @@ class _UsersPageState extends State<UsersPage> {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+          stream:
+              widget.follows.length == 0 ? null :
+          FirebaseFirestore.instance
               .collection('users')
               .where('uid', whereIn: widget.follows) // 使用whereIn来选择包含在follows列表中的用户
               .snapshots(),
@@ -54,12 +56,18 @@ class _UsersPageState extends State<UsersPage> {
                 child: CircularProgressIndicator(),
               );
             }
-            if (!snapshot.hasData) {
-              print("!snapshot.hasDatag");
-              return const Center(
-                child: CircularProgressIndicator(),
+            // print(snapshot.data!.docs.length);
+            if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
+              return Center(
+                child: Text("没有用户"),
               );
             }
+            // if (!snapshot.hasData) {
+            //   print("!snapshot.hasDatag");
+            //   return const Center(
+            //     child: CircularProgressIndicator(),
+            //   );
+            // }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
