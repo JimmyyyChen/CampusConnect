@@ -5,9 +5,7 @@ import 'package:forum/app_state.dart';
 import 'package:forum/classes/user.dart';
 import 'package:forum/post_detail_page.dart';
 import 'package:forum/post_widget.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'classes/post.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -277,9 +275,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       isFollowed: appState.follows
                           .contains(appState.posts[postuid]!.authoruid),
                       isLike: appState.likedPostsId.contains(postuid),
-                      profileImage: appState
-                          .userMap[appState.posts[postuid]!.authoruid]!
-                          .profileImage,
                       commentAction: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return PostDetailPage(

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,6 @@ class PostWidget extends StatefulWidget {
     required this.isFollowed,
     required this.isLike,
     required this.isFavorite,
-    required this.profileImage,
     this.showVideoThumbnail =
         true, // if true, show video thumbnail, else show video player which can be played by tapping
     this.hasBottomBar = true,
@@ -29,7 +26,6 @@ class PostWidget extends StatefulWidget {
   final bool isFavorite;
   final bool hasBottomBar;
   final bool showVideoThumbnail;
-  final String profileImage;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -70,7 +66,7 @@ class _PostWidgetState extends State<PostWidget> {
                     radius: 17.0,
                     backgroundImage:
                         //todo
-                        NetworkImage(widget.profileImage),
+                        NetworkImage(widget.post.authorProfileImage), //TODO
                     child: Container(),
                   ),
                 ),

@@ -17,6 +17,7 @@ class Post {
     required this.imageUrl,
     required this.videoUrl,
     required this.authorName, 
+    required this.authorProfileImage,
   });
 
   final String postuid;
@@ -33,6 +34,7 @@ class Post {
   final String? imageUrl; // TODO: single image
   final String? videoUrl; // TODO: single video
   final String authorName;
+  final String authorProfileImage;
 }
 
 class Comment {

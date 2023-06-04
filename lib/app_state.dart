@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
@@ -143,7 +141,16 @@ class ApplicationState extends ChangeNotifier {
               return snapshot.data()?['name'];
             });
 
+            String authorProfileImage = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(document.data()['authoruid'])
+                .get()
+                .then((snapshot) {
+              return snapshot.data()?['profile'];
+            });
+
             _posts[document.id] = Post(
+              authorProfileImage: authorProfileImage,
               postuid: document.id,
               authoruid: document.data()['authoruid'],
               authorName: authorName,
