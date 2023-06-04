@@ -15,6 +15,7 @@ class PostWidget extends StatefulWidget {
     required this.isFollowed,
     required this.isLike,
     required this.isFavorite,
+    required this.profileImage,
     this.showVideoThumbnail =
         true, // if true, show video thumbnail, else show video player which can be played by tapping
     this.hasBottomBar = true,
@@ -27,6 +28,7 @@ class PostWidget extends StatefulWidget {
   final bool isFavorite;
   final bool hasBottomBar;
   final bool showVideoThumbnail;
+  final String profileImage;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -50,8 +52,9 @@ class _PostWidgetState extends State<PostWidget> {
                 CircleAvatar(
                   // backgroundImage: NetworkImage(widget.post.userImage),
                   // random color
-                  backgroundColor:
-                      Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                  // backgroundColor:
+                  //     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                  backgroundImage: NetworkImage(widget.profileImage),
                 ),
                 const SizedBox(width: 8.0),
                 Column(

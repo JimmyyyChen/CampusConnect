@@ -277,6 +277,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       isFollowed: appState.follows
                           .contains(appState.posts[postuid]!.authoruid),
                       isLike: appState.likedPostsId.contains(postuid),
+                      profileImage: appState
+                          .userMap[appState.posts[postuid]!.authoruid]!
+                          .profileImage,
                       commentAction: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return PostDetailPage(
