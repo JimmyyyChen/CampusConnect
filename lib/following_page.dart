@@ -29,9 +29,6 @@ class FollowingPage extends StatelessWidget {
               // profile image
               leading: GestureDetector(
                 onTap: () {
-                  ApplicationState()
-                      .setToseeProfile("M0MAz9RQcUTGg6Q8RMy4lqki4TA3");
-
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -43,6 +40,7 @@ class FollowingPage extends StatelessWidget {
                   radius: 50.0,
                   //todo
                   backgroundImage:
+                      //todo
                       NetworkImage(ApplicationState().localUser.profileImage),
                   child: Container(),
                 ),

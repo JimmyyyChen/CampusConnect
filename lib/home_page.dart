@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
             child: Consumer<ApplicationState>(
               builder: (context, appState, _) {
                 // make a copy of appState.posts
-                Map<String, Post> posts = Map.from(appState.posts); 
+                Map<String, Post> posts = Map.from(appState.posts);
                 // sort the posts
 
                 posts = Map.fromEntries(posts.entries.toList()
@@ -123,14 +123,22 @@ class _HomePageState extends State<HomePage> {
                         e2.value.likeCount.compareTo(e1.value.likeCount)));
                 } else if (_sortMode == 2) {
                   posts = Map.fromEntries(posts.entries.toList()
-                    ..sort((e1, e2) =>
-                        e2.value.commentCount.compareTo(e1.value.commentCount)));
+                    ..sort((e1, e2) => e2.value.commentCount
+                        .compareTo(e1.value.commentCount)));
                 }
 
                 return ListView.builder(
                   itemCount: appState.posts.length,
                   itemBuilder: (context, index) {
                     String postuid = posts.keys.elementAt(index);
+                    print("是否屏蔽");
+                    print(appState.posts[postuid]!.authoruid);
+                    print(appState.blocks);
+                    if (appState.blocks
+                        .contains(appState.posts[postuid]!.authoruid)) {
+                      print("屏蔽你");
+                      return Container();
+                    }
                     if (_filterMode == 1 &&
                         !appState.follows
                             .contains(appState.posts[postuid]!.authoruid)) {
