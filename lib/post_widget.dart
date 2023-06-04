@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 
 import 'classes/post.dart';
 import 'post_content_viewer.dart';
+import 'package:http/http.dart' as http; //http
+import 'dart:convert'; //json
+import 'package:share/share.dart';
+
 
 class PostWidget extends StatefulWidget {
   const PostWidget({
@@ -181,6 +185,51 @@ class _PostWidgetState extends State<PostWidget> {
                               'likeCount': FieldValue.increment(-1),
                             });
                           } else {
+                            //发送通知
+                            try {
+                              // BFTlg14_25pHXUUSVSQWq4GIQXskgU-bMrAKIWl_FoPMAda7yMvrRWuMmXYGmKsjAUB2wiLrH93znSZqdqo6ZOU
+                              var serverKey =
+                                  'AAAAwp4ZTao:APA91bFtJ2NPY2GUMWfWX81rp-JuwmTaFmrI4_vHAQX0pmGNyNhIOhDReedW4dqmoLQtf07F5HspHf7q9HH7xsq8-DiIKD0SEH6NSWf5amWf2jrLy2XPXtDBUMW1wwXCvut6ybcyEbs-';
+                              var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+
+                              var headers = {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'key=$serverKey',
+                              };
+
+                              var querySnapshot = await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .where('uid', isEqualTo: widget.post.authoruid)
+                                  .get();
+
+                              var fcmToken ="0";
+                                  // "eAdnWZ94Tr-ksrYsG7eM8i:APA91bEKvcM-J-5d5z6JRPdDwNu5VJQIDq8bDuC2X4crvtay7y0Jg0FestUUpoNr0lHQLysgh2f1sitx9droA3dT6L0U2JhNlCFdtrgSZyBA24dSaRAlrfunMG2j6-wV3TJK8MWo-txe";
+
+                              if (querySnapshot.docs.isNotEmpty) {
+                                var userData = querySnapshot.docs[0].data();
+                                fcmToken = userData['pushToken'];
+                              }
+                              print("fcmToken is "+fcmToken);
+
+                              var message = {
+                                'notification': {
+                                  'title': "您的动态收到了一条点赞",
+                                },
+                                'to': fcmToken,
+                              };
+
+                              var response =
+                              await http.post(url, headers: headers, body: jsonEncode(message));
+
+                              if (response.statusCode == 200) {
+                                print('Notification sent successfully.');
+                              } else {
+                                print('Error1 sending notification: ${response.body}');
+                              }
+                            } catch (e) {
+                              print('Error2 sending notification: $e');
+                            }
+
                             FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -216,7 +265,12 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {}, //TODO : 分享界面实现
+                        onPressed: () {
+                          String text= widget.post.authorName+"的动态："+widget.post.markdownText;
+                          String subject = 'Sharing';
+
+                          Share.share(text, subject: subject);
+                        }, //TODO : 分享界面实现
                         child: const Row(
                           children: [
                             Icon(Icons.share),

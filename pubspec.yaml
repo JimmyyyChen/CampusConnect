@@ -58,6 +58,7 @@ dependencies:
   camera: ^0.10.5+2
   video_thumbnail: ^0.5.3
   firebase_analytics:
+  share:
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:forum/app_state.dart';
 import 'package:forum/classes/user.dart';
+import 'package:forum/pages/chat_screen.dart';
 import 'package:forum/post_detail_page.dart';
 import 'package:forum/post_widget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -96,7 +97,11 @@ class _ProfilePageState extends State<ProfilePage> {
   void sendMessage() {
     if (followed) {
       // 处理发送私信逻辑
-      //todo
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Chat_Screen(uid: widget.uid),
+          ));
     } else {
       showDialog(
         context: context,
