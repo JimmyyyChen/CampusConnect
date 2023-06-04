@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'settings_page.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class InfoInitialPage extends StatefulWidget {
@@ -57,16 +56,6 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.settings,
-              color: Colors.blue,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const SettingsPage()));
-            },
-          ),
         ],
       ),
       body: Container(

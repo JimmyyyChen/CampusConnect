@@ -3,11 +3,11 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:forum/classes/user.dart';
 import 'package:forum/infoinitial.dart';
+import 'package:forum/message.dart';
 import 'editProfilePage.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
-import 'settings_page.dart';
 
 class AccountPage extends StatefulWidget {
   final bool loggedIn;
@@ -33,12 +33,12 @@ class _AccountPageState extends State<AccountPage> {
             actions: [
               IconButton(
                 icon: const Icon(
-                  Icons.settings,
+                  Icons.message,
                   color: Colors.white,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const SettingsPage()));
+                      builder: (BuildContext context) => MessageList()));
                 },
               ),
             ],
@@ -177,17 +177,6 @@ class _AccountPageState extends State<AccountPage> {
           appBar: AppBar(
             title: const Text('Account'),
             actions: [
-              IconButton(
-                icon: const Icon(
-                  Icons.settings, //TODO:
-
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => const SettingsPage()));
-                },
-              ),
             ],
           ),
           body: ListView(

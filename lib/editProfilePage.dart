@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:forum/app_state.dart';
 import 'package:image_picker/image_picker.dart';
-import 'settings_page.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:io';
 
@@ -57,16 +56,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.settings,
-              color: Colors.blue,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const SettingsPage()));
-            },
-          ),
         ],
       ),
       body: Container(

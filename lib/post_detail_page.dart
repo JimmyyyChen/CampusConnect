@@ -168,7 +168,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
                       if (querySnapshot.docs.isNotEmpty) {
                         var userData = querySnapshot.docs[0].data();
-                        fcmToken = userData['pushToken'];
+                        fcmToken = userData['fcmToken'];
                       }
                       print("fcmToken is "+fcmToken);
 
