@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:forum/app_state.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import 'classes/user.dart';
 
 class InfoInitialPage extends StatefulWidget {
   const InfoInitialPage({Key? key}) : super(key: key);
@@ -207,6 +210,13 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         'blocks': [],
                         'fcmToken': token,
                       });
+                      ApplicationState().setLocalUser(UserData(
+                        uid: uid!,
+                        name: _userName!,
+                        profileImage: '',
+                        introduction: _about!,
+                      )
+                      );
                       Navigator.pop(context);
                     },
                     child: const Text(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MessageList extends StatefulWidget {
+  final List<String> messageList;
+  MessageList({Key?key,required this.messageList}) : super(key: key);
   @override
   _MessageListState createState() => _MessageListState();
 }
@@ -12,25 +14,9 @@ class _MessageListState extends State<MessageList> {
   @override
   void initState() {
     super.initState();
-    _messagesFuture = _getMessages();
   }
 
-  Future<List<Map<String, dynamic>>> _getMessages() async {
-    QuerySnapshot querySnapshot =
-    await FirebaseFirestore.instance.collection('messages').orderBy('timestamp', descending: true).get();
 
-    // 先添加一条默认消息
-    List<Map<String, dynamic>> messages = [{
-      'title': '默认标题',
-      'body': '默认消息内容',
-    }];
-
-    for (var doc in querySnapshot.docs) {
-      messages.add(doc.data() as Map<String, dynamic>);
-    }
-
-    return messages;
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,13 @@ class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
+  //初始化消息列表
+  List<String> _messages = [];
+  List<String> get messages => _messages;
+  void addMessage(String message) {
+    _messages.add(message);
+    notifyListeners();
+  }
   //本地默认用户设置；
   UserData localUser = UserData(
     uid: '0000001',
@@ -19,7 +26,10 @@ class ApplicationState extends ChangeNotifier {
         'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80',
     introduction: "我的简介",
   );
-
+  void setLocalUser(UserData user) {
+    localUser = user;
+    notifyListeners();
+  }
   List<UserData> _followingUsers = [];
   List<UserData> get followingUsers => _followingUsers;
 

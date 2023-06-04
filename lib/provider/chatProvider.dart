@@ -60,6 +60,8 @@ class ChatProvider {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage: $message');
       print(message.notification?.title);
+      print(message.notification?.body);
+      print("under is body");
       if (message.notification != null) {
         showNotification(message.notification!);
       }
