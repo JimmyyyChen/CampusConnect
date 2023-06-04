@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
@@ -75,19 +77,24 @@ class ApplicationState extends ChangeNotifier {
           _likedPostsId = [];
           for (final document in snapshot.docs) {
             if (document.data()['uid'] == user.uid) {
-              for (final following in document.data()['follows']) {
-                _follows.add(following);
-              }
-              for (final blocking in document.data()['blocks']) {
-                _blocks.add(blocking);
-              }
-              print("follows: $_follows");
-              print("blocks: $_blocks");
-              for (final favoritePostId in document.data()['favoritePostsId']) {
-                _favoritePostsId.add(favoritePostId);
-              }
-              for (final likedPostId in document.data()['likedPostsId']) {
-                _likedPostsId.add(likedPostId);
+              try {
+                for (final following in document.data()['follows']) {
+                  _follows.add(following);
+                }
+                for (final blocking in document.data()['blocks']) {
+                  _blocks.add(blocking);
+                }
+                for (final favoritePostId
+                    in document.data()['favoritePostsId']) {
+                  _favoritePostsId.add(favoritePostId);
+                }
+                for (final likedPostId in document.data()['likedPostsId']) {
+                  _likedPostsId.add(likedPostId);
+                }
+              } catch (e) {
+                // stop the app
+                print("Error fetching user's data from firestore, see /app_state.dart. Error Message: $e");
+                // exit(0);
               }
               break;
             }
