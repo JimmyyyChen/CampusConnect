@@ -31,6 +31,11 @@ class ApplicationState extends ChangeNotifier {
     _loggedIn = value;
   }
 
+  String account_image =
+      'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=333&q=80';
+  String account_about = "我的简介";
+  String account_name = "name";
+
   StreamSubscription<QuerySnapshot>? _usersSubscription;
   List<String> _follows = [];
   List<String> get follows => _follows;
@@ -66,6 +71,9 @@ class ApplicationState extends ChangeNotifier {
         profileImage: userData['profile'],
         introduction: userData['introduction'],
       );
+      account_about = userData['introduction'];
+      account_image = userData['profile'];
+      account_name = userData['name'];
       notifyListeners();
     });
 
@@ -84,14 +92,13 @@ class ApplicationState extends ChangeNotifier {
           _followingUsers = [];
           for (final document in snapshot.docs) {
             try {
-              if (!_userMap.containsKey(document.data()['uid'])) {
-                _userMap[document.data()['uid']] = UserData(
-                  uid: document.data()['uid'],
-                  name: document.data()['name'],
-                  profileImage: document.data()['profile'],
-                  introduction: document.data()['introduction'],
-                );
-              }
+              _userMap[document.data()['uid']] = UserData(
+                uid: document.data()['uid'],
+                name: document.data()['name'],
+                profileImage: document.data()['profile'],
+                introduction: document.data()['introduction'],
+              );
+
               print("userMap: $_userMap");
 
               if (document.data()['uid'] == user.uid) {

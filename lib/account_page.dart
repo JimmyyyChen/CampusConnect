@@ -76,7 +76,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       Center(
                         child: Text(
-                          appState.localUser.name,
+                          appState.account_name,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
@@ -87,7 +87,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       Center(
                         child: Text(
-                          appState.localUser.introduction,
+                          appState.account_about,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
@@ -96,6 +96,11 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                         ),
                       ),
+                      Consumer<ApplicationState>(
+                          builder: (context, appState, _) => ListTile(
+                                title: Text(appState.account_name),
+                                onTap: () {},
+                              )),
                       Consumer<ApplicationState>(
                           builder: (context, appState, _) => ListTile(
                                 title: appState.loggedIn
@@ -164,10 +169,6 @@ class _AccountPageState extends State<AccountPage> {
                             MaterialPageRoute(
                                 builder: (context) => const EditProfilePage()),
                           );
-                          setState(() {
-                            localUser = ApplicationState().localUser;
-                          });
-                          print("运行过setState()");
                         },
                       ),
                     ],
