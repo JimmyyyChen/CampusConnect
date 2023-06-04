@@ -61,9 +61,6 @@ class _FavoritePageState extends State<FavoritePage> {
                       isFollowed: appState.follows
                           .contains(appState.posts[postUid]!.authoruid),
                       isLike: appState.likedPostsId.contains(postUid),
-                      profileImage: appState
-                          .userMap[appState.posts[postUid]!.authoruid]!
-                          .profileImage,
                       commentAction: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return PostDetailPage(

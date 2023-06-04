@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:forum/profile_page.dart';
 
 import 'classes/post.dart';
 import 'post_content_viewer.dart';
@@ -19,7 +18,6 @@ class PostWidget extends StatefulWidget {
     required this.isFollowed,
     required this.isLike,
     required this.isFavorite,
-    required this.profileImage,
     this.showVideoThumbnail =
         true, // if true, show video thumbnail, else show video player which can be played by tapping
     this.hasBottomBar = true,
@@ -32,7 +30,6 @@ class PostWidget extends StatefulWidget {
   final bool isFavorite;
   final bool hasBottomBar;
   final bool showVideoThumbnail;
-  final String profileImage;
 
   @override
   State<PostWidget> createState() => _PostWidgetState();
@@ -53,12 +50,29 @@ class _PostWidgetState extends State<PostWidget> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  // backgroundImage: NetworkImage(widget.post.userImage),
-                  // random color
-                  // backgroundColor:
-                  //     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
-                  backgroundImage: NetworkImage(widget.profileImage),
+                // CircleAvatar(
+                //   // backgroundImage: NetworkImage(widget.post.userImage),
+                //   // random color
+                //   // backgroundColor:
+                //   //     Color(0xFF0000FF & Random().nextInt(0xFFFFFFFF)),
+                //   backgroundImage: NetworkImage(widget.profileImage),
+                // ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(uid: widget.post.authoruid),
+                        ));
+                  },
+                  child: CircleAvatar(
+                    radius: 17.0,
+                    backgroundImage:
+                        //todo
+                        NetworkImage(widget.post.authorProfileImage), //TODO
+                    child: Container(),
+                  ),
                 ),
                 const SizedBox(width: 8.0),
                 Column(

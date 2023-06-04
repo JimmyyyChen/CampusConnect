@@ -1,20 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'home_page.dart';
 import 'settings_page.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'dart:io';
 
 class InfoInitialPage extends StatefulWidget {
   const InfoInitialPage({Key? key}) : super(key: key);
@@ -169,11 +161,8 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                     onPressed: () async {
                       _userName = displayNameController.text;
                       _about = aboutController.text;
-                      print(_userName);
-                      print(_about);
                       final String? uid =
                           FirebaseAuth.instance.currentUser?.uid;
-                      print(uid);
                       String? token =
                           await FirebaseMessaging.instance.getToken();
                       firebase_storage.Reference storageRef = firebase_storage
@@ -181,7 +170,6 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                           .ref()
                           .child('profiles')
                           .child(uid!);
-                      print(storageRef);
                       await storageRef.putFile(File(_imageUrl));
                       UploadTask uploadTask =
                           storageRef.putFile(File(_imageUrl));
@@ -202,7 +190,6 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         'blocks': [],
                         'fcmToken': token,
                       });
-                      print("sahngchuan");
                       Navigator.pop(context);
                     },
                     child: const Text(

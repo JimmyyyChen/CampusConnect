@@ -1,16 +1,9 @@
-import 'dart:io';
-
-import 'package:forum/constants/Firebase_constant.dart';
 import 'package:forum/pages/chat_screen.dart';
 import 'package:forum/provider/chatProvider.dart';
 import 'package:forum/classes/user.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -40,7 +33,6 @@ class _UsersPageState extends State<UsersPage> {
     // print("this uid is" +FirebaseAuth.instance.currentUser!.uid);
     //test mess
 
-    String uid = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text("Users"),

@@ -52,9 +52,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   builder: (context, appState, _) => PostWidget(
                       showVideoThumbnail: false, // can play video
                       post: appState.posts[widget.postUid]!,
-                      profileImage: appState
-                          .userMap[appState.posts[widget.postUid]!.authoruid]!
-                          .profileImage,
                       isFavorite:
                           appState.favoritePostsId.contains(widget.postUid),
                       isFollowed: appState.follows

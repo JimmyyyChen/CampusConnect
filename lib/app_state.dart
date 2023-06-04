@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
@@ -84,14 +82,13 @@ class ApplicationState extends ChangeNotifier {
           _followingUsers = [];
           for (final document in snapshot.docs) {
             try {
-              if (!_userMap.containsKey(document.data()['uid'])) {
-                _userMap[document.data()['uid']] = UserData(
-                  uid: document.data()['uid'],
-                  name: document.data()['name'],
-                  profileImage: document.data()['profile'],
-                  introduction: document.data()['introduction'],
-                );
-              }
+              _userMap[document.data()['uid']] = UserData(
+                uid: document.data()['uid'],
+                name: document.data()['name'],
+                profileImage: document.data()['profile'],
+                introduction: document.data()['introduction'],
+              );
+
               print("userMap: $_userMap");
 
               if (document.data()['uid'] == user.uid) {
@@ -131,6 +128,8 @@ class ApplicationState extends ChangeNotifier {
             .collection('posts')
             .snapshots()
             .listen((snapshot) async {
+
+
           _posts = {};
           for (final document in snapshot.docs) {
             // get author name from users collection by authoruid
@@ -142,7 +141,16 @@ class ApplicationState extends ChangeNotifier {
               return snapshot.data()?['name'];
             });
 
+            String authorProfileImage = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(document.data()['authoruid'])
+                .get()
+                .then((snapshot) {
+              return snapshot.data()?['profile'];
+            });
+
             _posts[document.id] = Post(
+              authorProfileImage: authorProfileImage,
               postuid: document.id,
               authoruid: document.data()['authoruid'],
               authorName: authorName,

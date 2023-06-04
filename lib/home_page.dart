@@ -166,9 +166,6 @@ class _HomePageState extends State<HomePage> {
                       child: PostWidget(
                         showVideoThumbnail: true,
                         post: appState.posts[postuid]!,
-                        profileImage: appState
-                            .userMap[appState.posts[postuid]!.authoruid]!
-                            .profileImage,
                         isFavorite: appState.favoritePostsId.contains(postuid),
                         isFollowed: appState.follows
                             .contains(appState.posts[postuid]!.authoruid),
