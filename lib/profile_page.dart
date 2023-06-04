@@ -23,13 +23,15 @@ class _ProfilePageState extends State<ProfilePage> {
   bool followed = false;
   bool blocked = false;
   List<String> _follows = [];
+  List<String> _blocks = [];
 
   void blockUser() {
     FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({
-      'blocks': FieldValue.arrayUnion([widget.uid])
+      'blocks': FieldValue.arrayUnion([widget.uid]),
+      'follows': FieldValue.arrayRemove([widget.uid])
     });
     setState(() {
       blocked = true;
@@ -155,7 +157,9 @@ class _ProfilePageState extends State<ProfilePage> {
         documentSnapshot2.data() as Map<String, dynamic>;
     if (userData2['follows'] != null) {
       List<dynamic> followsDynamic2 = userData2['follows'];
+      List<dynamic> followsDynamic3 = userData2['blocks'];
       _follows = List<String>.from(followsDynamic2);
+      _blocks = List<String>.from(followsDynamic3);
     }
 
     print("follows: $_follows");
@@ -163,6 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _userData = _userData;
       followed = _follows.contains(widget.uid);
+      blocked = _blocks.contains(widget.uid);
       print("uid: ${widget.uid}");
       print("followed: $followed");
     });
@@ -254,7 +259,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 itemCount: appState.posts.length,
                 itemBuilder: (context, index) {
                   String postuid = appState.posts.keys.elementAt(index);
-                  if (appState.posts[postuid]!.authoruid != widget.uid) {
+                  if ((appState.posts[postuid]!.authoruid != widget.uid) ||
+                      blocked) {
                     return Container();
                   }
                   return GestureDetector(
