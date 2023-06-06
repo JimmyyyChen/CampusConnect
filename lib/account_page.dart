@@ -38,8 +38,7 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          DetailsScreen()));
+                      builder: (BuildContext context) => DetailsScreen()));
                 },
               ),
             ],
@@ -168,7 +167,7 @@ class _AccountPageState extends State<AccountPage> {
                           setState(() {
                             localUser = ApplicationState().localUser;
                           });
-                          print("运行过setState()");
+                          // print("运行过setState()");
                         },
                       ),
                     ],

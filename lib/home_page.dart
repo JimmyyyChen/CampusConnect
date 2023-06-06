@@ -131,14 +131,17 @@ class _HomePageState extends State<HomePage> {
                   itemCount: appState.posts.length,
                   itemBuilder: (context, index) {
                     String postuid = posts.keys.elementAt(index);
-                    print("是否屏蔽");
-                    print(appState.posts[postuid]!.authoruid);
-                    print(appState.blocks);
-                    if (appState.blocks
-                        .contains(appState.posts[postuid]!.authoruid)) {
-                      print("屏蔽你");
-                      return Container();
-                    }
+                    // print("是否屏蔽");
+                    // print(appState.posts[postuid]!.authoruid);
+                    // print(appState.blocks);
+
+                    // TODO: BUGGGG
+                    // if (appState.blocks
+                    //     .contains(appState.posts[postuid]!.authoruid)) {
+                    //   // print("屏蔽你");
+                    //   return Container();
+                    // }
+                    
                     if (_filterMode == 1 &&
                         !appState.follows
                             .contains(appState.posts[postuid]!.authoruid)) {

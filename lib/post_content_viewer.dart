@@ -147,7 +147,7 @@ class _PostContentViewerState extends State<PostContentViewer> {
                 ),
           // video viewer for local video when creating post
 
-          if (widget.videoUrl != null)
+          if (widget.videoUrl != null || widget.videoFile != null)
             if (widget.showVideoThumbnail)
               const Center(
                 child: Icon(
@@ -155,7 +155,7 @@ class _PostContentViewerState extends State<PostContentViewer> {
                   size: 70,
                 ),
               )
-
+            // TODO: it works, but it's ugly
             // if (widget.showVideoThumbnail && _thumbnailPath != null)
             // show thumbnail of video
             // Image.file(

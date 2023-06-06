@@ -165,14 +165,14 @@ class _ProfilePageState extends State<ProfilePage> {
       _blocks = List<String>.from(followsDynamic3);
     }
 
-    print("follows: $_follows");
+    // print("follows: $_follows");
     // 数据获取完成后触发UI更新
     setState(() {
       _userData = _userData;
       followed = _follows.contains(widget.uid);
       blocked = _blocks.contains(widget.uid);
-      print("uid: ${widget.uid}");
-      print("followed: $followed");
+      // print("uid: ${widget.uid}");
+      // print("followed: $followed");
     });
   }
 

@@ -101,7 +101,7 @@ class _PostWidgetState extends State<PostWidget> {
                 TextButton(
                   onPressed: () async {
                     if (widget.isFollowed) {
-                      FirebaseFirestore.instance
+                      await FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
@@ -109,7 +109,7 @@ class _PostWidgetState extends State<PostWidget> {
                             FieldValue.arrayRemove([widget.post.authoruid])
                       });
                     } else {
-                      FirebaseFirestore.instance
+                      await FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .update({
@@ -184,7 +184,7 @@ class _PostWidgetState extends State<PostWidget> {
                       TextButton(
                         onPressed: () async {
                           if (widget.isLike) {
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .update({
@@ -192,7 +192,7 @@ class _PostWidgetState extends State<PostWidget> {
                                   FieldValue.arrayRemove([widget.post.postuid])
                             });
                             // decrease likeCount to post
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('posts')
                                 .doc(widget.post.postuid)
                                 .update({
@@ -244,7 +244,7 @@ class _PostWidgetState extends State<PostWidget> {
                               print('Error2 sending notification: $e');
                             }
 
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .update({
@@ -252,7 +252,7 @@ class _PostWidgetState extends State<PostWidget> {
                                   FieldValue.arrayUnion([widget.post.postuid])
                             });
                             // add likeCount to post
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('posts')
                                 .doc(widget.post.postuid)
                                 .update({
@@ -295,7 +295,7 @@ class _PostWidgetState extends State<PostWidget> {
                       TextButton(
                         onPressed: () async {
                           if (widget.isFavorite) {
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .update({
@@ -303,14 +303,14 @@ class _PostWidgetState extends State<PostWidget> {
                                   FieldValue.arrayRemove([widget.post.postuid])
                             });
                             // update favoriteCount to post
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('posts')
                                 .doc(widget.post.postuid)
                                 .update({
                               'favoriteCount': FieldValue.increment(-1),
                             });
                           } else {
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('users')
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .update({
@@ -318,7 +318,7 @@ class _PostWidgetState extends State<PostWidget> {
                                   FieldValue.arrayUnion([widget.post.postuid])
                             });
                             // update favoriteCount to post
-                            FirebaseFirestore.instance
+                            await FirebaseFirestore.instance
                                 .collection('posts')
                                 .doc(widget.post.postuid)
                                 .update({

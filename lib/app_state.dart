@@ -116,8 +116,8 @@ class ApplicationState extends ChangeNotifier {
                 for (final blocking in document.data()['blocks']) {
                   _blocks.add(blocking);
                 }
-                print("follows: $_follows");
-                print("blocks: $_blocks");
+                // print("follows: $_follows");
+                // print("blocks: $_blocks");
                 for (final favoritePostId
                     in document.data()['favoritePostsId']) {
                   _favoritePostsId.add(favoritePostId);
