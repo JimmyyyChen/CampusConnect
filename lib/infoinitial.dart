@@ -57,8 +57,7 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-        ],
+        actions: [],
       ),
       body: Container(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
@@ -215,8 +214,8 @@ class _InfoInitialPageState extends State<InfoInitialPage> {
                         name: _userName!,
                         profileImage: '',
                         introduction: _about!,
-                      )
-                      );
+                      ));
+                      FirebaseAuth.instance.signOut();
                       Navigator.pop(context);
                     },
                     child: const Text(
