@@ -47,57 +47,56 @@ class _SearchPageState extends State<SearchPage> {
               ElevatedButton(
                 onPressed: () async {
                   List<String> keywords = _controller.text.split(' ');
+                  List<UserData> futureFoundedUsers = [];
+                  List<String> futureFoundedPostsUid = [];
 
-                  Set<UserData> futureFoundedUsersSet = {};
-                  Set<String> futureFoundedPostsUidSet = {};
-
-                  for (String keyword in keywords) {
-                    List<UserData> futureFoundedUsers = await FirebaseFirestore
-                        .instance
+                  for (var keyword in keywords) {
+                    // Search in users collection
+                    await FirebaseFirestore.instance
                         .collection('users')
-                        .where('name', arrayContains: keyword)
                         .get()
                         .then((QuerySnapshot querySnapshot) {
-                      List<UserData> foundedUsers = [];
                       querySnapshot.docs.forEach((doc) {
-                        foundedUsers.add(UserData(
-                          uid: doc.id,
-                          name: doc['name'],
-                        ));
+                        if (doc['name'].contains(keyword)) {
+                          futureFoundedUsers.add(UserData(
+                            uid: doc.id,
+                            name: doc['name'],
+                          ));
+                        }
                       });
-                      return foundedUsers;
                     });
 
-                    futureFoundedUsersSet.addAll(futureFoundedUsers);
-
-                    // iterate through all documents in posts collection
+                    // Search in posts collection
                     await FirebaseFirestore.instance
                         .collection('posts')
                         .get()
                         .then((QuerySnapshot querySnapshot) {
                       querySnapshot.docs.forEach((doc) {
-                        // if markdownText contains the keyword
                         if (doc['markdownText'].contains(keyword)) {
-                          futureFoundedPostsUidSet.add(doc.id);
+                          futureFoundedPostsUid.add(doc.id);
                         }
                         // if tag contains the keyword, tag is a String or null
                         if (doc['tag'] != null &&
                             doc['tag'].contains(keyword)) {
-                          futureFoundedPostsUidSet.add(doc.id);
+                          futureFoundedPostsUid.add(doc.id);
                         }
                         // if author is in the founded users
-                        if (futureFoundedUsersSet
+                        if (futureFoundedUsers
                             .map((e) => e.uid)
                             .contains(doc['authoruid'])) {
-                          futureFoundedPostsUidSet.add(doc.id);
+                          futureFoundedPostsUid.add(doc.id);
                         }
                       });
                     });
                   }
 
+                  // Remove duplicates
+                  futureFoundedUsers = futureFoundedUsers.toSet().toList();
+                  futureFoundedPostsUid = futureFoundedPostsUid.toSet().toList();
+
                   setState(() {
-                    _foundedUsers = futureFoundedUsersSet.toList();
-                    _foundedPostsUid = futureFoundedPostsUidSet.toList();
+                    _foundedUsers = futureFoundedUsers;
+                    _foundedPostsUid = futureFoundedPostsUid;
                   });
                 },
                 child: const Text('Search'),
@@ -132,36 +131,36 @@ class _SearchPageState extends State<SearchPage> {
                       itemBuilder: (context, index) {
                         return Consumer<ApplicationState>(
                             builder: (context, appState, _) {
-                          String postuid = _foundedPostsUid[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) {
-                                return PostDetailPage(
-                                  postUid: postuid,
-                                );
-                              }));
-                            },
-                            child: PostWidget(
-                              showVideoThumbnail: true,
-                              hasBottomBar: false,
-                              post: appState.posts[postuid]!,
-                              isFavorite:
+                              String postuid = _foundedPostsUid[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                        return PostDetailPage(
+                                          postUid: postuid,
+                                        );
+                                      }));
+                                },
+                                child: PostWidget(
+                                  showVideoThumbnail: true,
+                                  hasBottomBar: false,
+                                  post: appState.posts[postuid]!,
+                                  isFavorite:
                                   appState.favoritePostsId.contains(postuid),
-                              isFollowed: appState.follows
-                                  .contains(appState.posts[postuid]!.authoruid),
-                              isLike: appState.likedPostsId.contains(postuid),
-                              commentAction: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (_) {
-                                  return PostDetailPage(
-                                    postUid: postuid,
-                                  );
-                                }));
-                              },
-                            ),
-                          );
-                        });
+                                  isFollowed: appState.follows
+                                      .contains(appState.posts[postuid]!.authoruid),
+                                  isLike: appState.likedPostsId.contains(postuid),
+                                  commentAction: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) {
+                                          return PostDetailPage(
+                                            postUid: postuid,
+                                          );
+                                        }));
+                                  },
+                                ),
+                              );
+                            });
                       }),
                 ]),
               ),
