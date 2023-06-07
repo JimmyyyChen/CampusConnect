@@ -95,7 +95,7 @@ class _Chat_ScreenState extends State<Chat_Screen> {
       var message = {
         'notification': {
           'title': chat.content,
-          'body': chat.content,
+          'body': 'from '+currentUserId,
         },
         'to': fcmToken,
       };

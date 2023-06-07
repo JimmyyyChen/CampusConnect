@@ -32,32 +32,6 @@ class ChatProvider {
 
   void registerNotification() {
     firebaseMessaging.requestPermission();
-    //Get FCM
-    // FirebaseMessaging.instance.getToken().then((String? token) {
-    //   if (token != null) {
-    //     // Get new FCM registration token
-    //     String msg = 'Token: $token';
-    //
-    //     // Log and toast
-    //     print('Token: $token');
-    //     Fluttertoast.showToast(
-    //         msg: msg,
-    //         toastLength: Toast.LENGTH_SHORT,
-    //         gravity: ToastGravity.BOTTOM,
-    //         timeInSecForIosWeb: 1,
-    //         backgroundColor: Colors.grey,
-    //         textColor: Colors.white,
-    //         fontSize: 16.0
-    //     );
-    //   } else {
-    //     print('Fetching FCM registration token failed');
-    //   }
-    // }).catchError((e) {
-    //   print('Fetching FCM registration token failed: $e');
-    // });
-
-    //listen channel
-    //test mess
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage: $message');
@@ -71,6 +45,7 @@ class ChatProvider {
           final messageData = {
             'uid': user.uid,
             'title': message.notification!.title!,
+            'body': message.notification!.body!,
           };
 
           FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -80,22 +55,19 @@ class ChatProvider {
             if (!docSnapshot.docs.isEmpty) {
               final document = docSnapshot.docs.first;
               final details = List.from(document.data()!['details'] ?? []);
-              details.add(messageData['title']);
+
+              // Modify this line to add a dictionary containing both 'title' and 'body'
+              details.add({'title': messageData['title'], 'body': messageData['body']});
+
               transaction.update(document.reference, {'details': details});
             } else {
               transaction.set(FirebaseFirestore.instance.collection('messages').doc(), {
                 'uid': user.uid,
-                'details': [messageData['title']],
+                'details': [{'title': messageData['title'], 'body': messageData['body']}],
               });
             }
           });
         }
-
-
-
-
-
-
         showNotification(message.notification!);
       }
     });
