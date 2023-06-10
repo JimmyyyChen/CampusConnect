@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
-import 'package:forum/app_state.dart';
-import 'package:forum/classes/msg.dart';
 
 import '../constants/Firebase_constant.dart';
 
@@ -54,7 +51,7 @@ class ChatProvider {
 
             if (!docSnapshot.docs.isEmpty) {
               final document = docSnapshot.docs.first;
-              final details = List.from(document.data()!['details'] ?? []);
+              final details = List.from(document.data()['details'] ?? []);
 
               // Modify this line to add a dictionary containing both 'title' and 'body'
               details.add({'title': messageData['title'], 'body': messageData['body']});

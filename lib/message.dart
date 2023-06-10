@@ -1,11 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:forum/app_state.dart';
-import 'package:forum/classes/msg.dart';
 import 'package:forum/pages/chat_screen.dart';
-import 'package:forum/post_detail_page.dart';
 
 class DetailsScreen extends StatelessWidget {
   DetailsScreen();

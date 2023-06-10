@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +48,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: [
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => PostWidget(
+                      isDetailed: true,
                       showVideoThumbnail: false, // can play video
                       post: appState.posts[widget.postUid]!,
                       isFavorite:

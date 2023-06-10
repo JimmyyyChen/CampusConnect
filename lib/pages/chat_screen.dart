@@ -1,17 +1,12 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:forum/constants/Firebase_constant.dart';
 import 'package:forum/constants/mediaquery.dart';
 import 'package:forum/models/message_chat.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:forum/constants/encryption.dart';
 import 'package:forum/constants/chatBubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class Chat_Screen extends StatefulWidget {
@@ -221,7 +216,7 @@ class _Chat_ScreenState extends State<Chat_Screen> {
                 itemBuilder: (context, index) {
                   MessageChat chat =
                       MessageChat.fromDocument(snapshot.data!.docs[index]);
-                  final String message = chat.content;
+                  // final String message = chat.content;
                   // Encryption().decrypted(chat.content, "1234567891234567");
                   return ChatBubble(
                       text: chat.content,

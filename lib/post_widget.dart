@@ -9,10 +9,10 @@ import 'package:http/http.dart' as http; //http
 import 'dart:convert'; //json
 import 'package:share/share.dart';
 
-
 class PostWidget extends StatefulWidget {
   const PostWidget({
     super.key,
+    this.isDetailed = false,
     required this.post,
     required this.commentAction,
     required this.isFollowed,
@@ -23,6 +23,7 @@ class PostWidget extends StatefulWidget {
     this.hasBottomBar = true,
   });
 
+  final bool isDetailed;
   final Post post;
   final void Function() commentAction;
   final bool isFollowed;
@@ -197,6 +198,9 @@ class _PostWidgetState extends State<PostWidget> {
                                 .doc(widget.post.postuid)
                                 .update({
                               'likeCount': FieldValue.increment(-1),
+                              // if likeCount < 1, don't decrease
+                              // 'likeCount': FieldValue.increment(
+                              //     widget.post.likeCount > 0 ? -1 : 0),
                             });
                           } else {
                             //发送通知
@@ -204,26 +208,29 @@ class _PostWidgetState extends State<PostWidget> {
                               // BFTlg14_25pHXUUSVSQWq4GIQXskgU-bMrAKIWl_FoPMAda7yMvrRWuMmXYGmKsjAUB2wiLrH93znSZqdqo6ZOU
                               var serverKey =
                                   'AAAAwp4ZTao:APA91bFtJ2NPY2GUMWfWX81rp-JuwmTaFmrI4_vHAQX0pmGNyNhIOhDReedW4dqmoLQtf07F5HspHf7q9HH7xsq8-DiIKD0SEH6NSWf5amWf2jrLy2XPXtDBUMW1wwXCvut6ybcyEbs-';
-                              var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+                              var url = Uri.parse(
+                                  'https://fcm.googleapis.com/fcm/send');
 
                               var headers = {
                                 'Content-Type': 'application/json',
                                 'Authorization': 'key=$serverKey',
                               };
 
-                              var querySnapshot = await FirebaseFirestore.instance
+                              var querySnapshot = await FirebaseFirestore
+                                  .instance
                                   .collection('users')
-                                  .where('uid', isEqualTo: widget.post.authoruid)
+                                  .where('uid',
+                                      isEqualTo: widget.post.authoruid)
                                   .get();
 
-                              var fcmToken ="0";
-                                  // "eAdnWZ94Tr-ksrYsG7eM8i:APA91bEKvcM-J-5d5z6JRPdDwNu5VJQIDq8bDuC2X4crvtay7y0Jg0FestUUpoNr0lHQLysgh2f1sitx9droA3dT6L0U2JhNlCFdtrgSZyBA24dSaRAlrfunMG2j6-wV3TJK8MWo-txe";
+                              var fcmToken = "0";
+                              // "eAdnWZ94Tr-ksrYsG7eM8i:APA91bEKvcM-J-5d5z6JRPdDwNu5VJQIDq8bDuC2X4crvtay7y0Jg0FestUUpoNr0lHQLysgh2f1sitx9droA3dT6L0U2JhNlCFdtrgSZyBA24dSaRAlrfunMG2j6-wV3TJK8MWo-txe";
 
                               if (querySnapshot.docs.isNotEmpty) {
                                 var userData = querySnapshot.docs[0].data();
                                 fcmToken = userData['fcmToken'];
                               }
-                              print("fcmToken is "+fcmToken);
+                              print("fcmToken is " + fcmToken);
 
                               var message = {
                                 'notification': {
@@ -232,13 +239,14 @@ class _PostWidgetState extends State<PostWidget> {
                                 'to': fcmToken,
                               };
 
-                              var response =
-                              await http.post(url, headers: headers, body: jsonEncode(message));
+                              var response = await http.post(url,
+                                  headers: headers, body: jsonEncode(message));
 
                               if (response.statusCode == 200) {
                                 print('Notification sent successfully.');
                               } else {
-                                print('Error1 sending notification: ${response.body}');
+                                print(
+                                    'Error1 sending notification: ${response.body}');
                               }
                             } catch (e) {
                               print('Error2 sending notification: $e');
@@ -265,7 +273,9 @@ class _PostWidgetState extends State<PostWidget> {
                             Icon(widget.isLike
                                 ? Icons.thumb_up
                                 : Icons.thumb_up_alt_outlined),
-                            Text('Like ${widget.post.likeCount}'),
+                            widget.isDetailed
+                                ? Text('Like ${widget.post.likeCount}')
+                                : const Text('Like'),
                           ],
                         ),
                       ),
@@ -280,7 +290,9 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       TextButton(
                         onPressed: () {
-                          String text= widget.post.authorName+"的动态："+widget.post.markdownText;
+                          String text = widget.post.authorName +
+                              "的动态：" +
+                              widget.post.markdownText;
                           String subject = 'Sharing';
 
                           Share.share(text, subject: subject);
@@ -331,7 +343,10 @@ class _PostWidgetState extends State<PostWidget> {
                             Icon(widget.isFavorite
                                 ? Icons.star
                                 : Icons.star_border),
-                            Text('Favorite ${widget.post.favoriteCount}'),
+                            widget.isDetailed
+                                ? Text('Favorite ${widget.post.favoriteCount}')
+                                : const Text('Favorite'),
+                            // Text('Favorite ${widget.post.favoriteCount}'),
                           ],
                         ),
                       ),
