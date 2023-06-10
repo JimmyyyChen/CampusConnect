@@ -18,6 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
+
 environment:
   sdk: '>=3.1.0-49.0.dev <4.0.0'
 
@@ -30,7 +31,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,6 +60,7 @@ dependencies:
   firebase_analytics:
   share:
   flutter_launcher_icons: ^0.13.1
+  google_fonts:
 
 dev_dependencies:
   flutter_launcher_icons: 
@@ -84,7 +85,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/bg.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -119,3 +122,4 @@ flutter_icons:
   android: "launcher_icon" 
   ios: true
   image_path: "assets/icon/icon.png"
+
