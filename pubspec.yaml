@@ -63,8 +63,6 @@ dependencies:
   google_fonts:
 
 dev_dependencies:
-  flutter_launcher_icons: 
-
   flutter_test:
     sdk: flutter
 
